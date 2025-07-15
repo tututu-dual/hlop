@@ -2,6 +2,7 @@
 #define __TYPES_H__
 
 #include <iostream>
+#include <ostream>
 
 namespace hlop {
 /**
@@ -59,6 +60,24 @@ enum class algo_type {
 typedef algo_type algo_type_t;
 
 std::ostream &operator<<(std::ostream &os, const hlop::algo_type &algo);
+
+/**
+ * @brief enum class rank arrangement.
+ * The rank arrangements are:
+ * - BLOCK
+ * - CYCLIC
+ * - PLANE
+ * - ARBITRARY
+ */
+enum class rank_arrange {
+	BLOCK,
+	CYCLIC,
+	PLANE,
+	ARBITRARY
+};
+typedef rank_arrange rank_arrange_t;
+
+std::ostream &operator<<(std::ostream &os, const hlop::rank_arrange &ra);
 } // namespace hlop
 
 #endif // __TYPES_H__

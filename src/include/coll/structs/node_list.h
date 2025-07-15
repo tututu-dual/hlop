@@ -6,10 +6,12 @@
 #include <regex>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #include "comm_pair.h"
 #include "platform.h"
+#include "structs/types.h"
 
 namespace hlop {
 /**
@@ -19,12 +21,35 @@ namespace hlop {
  * such as the number of cores, the number of nodes, and the network level between nodes.
  * It also allows for the retrieval of node names by process ranks
  * and provides functionality to check if a node is part of the list.
- * @throws hlop_err if the node list is not valid or if the number of processes per node exceeds the maximum allowed.
+ * @throws hlop_err, if the node list is not valid or if the number of processes per node exceeds the maximum allowed.
  */
 class node_list {
 public:
+	/**
+	 * @brief default constructor of node_list
+	 * @note This constructor is not accessible directly and should not be used.
+	 * It is provided to prevent the creation of an empty node_list.
+	 */
 	node_list() = delete;
-	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn);
+	/**
+	 * @brief constructor of node_list with ranks
+	 * @param pf platform, the platform type of this node list
+	 * @param node_list_str string, a string representation of the node list
+	 * @param ppn int, the number of processes per node
+	 * @param ranks vector<int>, a vector of process ranks in this node list
+	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1]
+	 */
+	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, std::vector<int> ranks);
+	/**
+	 * @brief constructor of node_list with ranks and rule
+	 * @param pf platform, the platform type of this node list
+	 * @param node_list_str string, a string representation of the node list
+	 * @param ppn int, the number of processes per node
+	 * @param ranks vector<int>, a vector of process ranks in this node list
+	 * @param rule rank_arrange, the rank arrangement rule to use
+	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1]
+	 */
+	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::rank_arrange_t rule);
 	~node_list() = default;
 
 public:
@@ -52,7 +77,7 @@ public:
 	 * @brief get node list
 	 * @return vector<string>, a vector of node names in this list
 	 */
-	const std::vector<std::string> &get_node_list() const;
+	std::vector<std::string_view> get_node_list() const;
 	/**
 	 * @brief get the number of process per node
 	 * @return int, the number of processes per node
@@ -62,7 +87,7 @@ public:
 	 * @brief get process ranks in this node list
 	 * @return vector<int>, a vector of process ranks in this node list
 	 */
-	const std::vector<int> get_ranks() const;
+	const std::unordered_map<int, const std::string &> &get_ranks() const;
 	/**
 	 * @brief get platform type this node list belong to
 	 * @return platform, the platform type of this node list
@@ -88,7 +113,6 @@ public:
 	 * @return string, the name of the node corresponding to the process rank
 	 */
 	const std::string &get_node_id_by_rank(int rank) const;
-
 	/**
 	 * @brief get the first k node in this node list
 	 * @param k int, the number of top nodes to retrieve
@@ -102,6 +126,15 @@ public:
 
 private:
 	/**
+	 * @brief constructor of node_list
+	 * @param pf platform, the platform type of this node list
+	 * @param node_list_str string, a string representation of the node list
+	 * @param ppn int, the number of processes per node
+	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1]
+	 * @note This can not access directly.
+	 */
+	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn);
+	/**
 	 * @brief check if a node is in this node list
 	 * @param node string, name of the node to check
 	 * @return bool, true if the node is in the list, false otherwise
@@ -109,8 +142,8 @@ private:
 	bool has_node(const std::string &node) const;
 
 private:
-	std::function<int(int, int)> rule;
 	std::vector<std::string> nlist;
+	std::unordered_map<int, const std::string &> rmap;
 
 	hlop::platform_t platform;
 	int node_cores;
@@ -118,6 +151,9 @@ private:
 	int max_network_level;
 	int nproc_per_node;
 	std::regex node_regex;
+
+private:
+	static const std::unordered_map<hlop::rank_arrange, std::function<int(int, int)>> rank_arrange_map;
 };
 typedef node_list node_list_t;
 

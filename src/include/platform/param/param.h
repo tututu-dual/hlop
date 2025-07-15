@@ -30,7 +30,17 @@ extern const std::function<double(double, hlop::exponential_params_t)> exp_fit_f
  */
 class param {
 public:
+	/**
+	 * @brief default constructor
+	 * @note This constructor is deleted to prevent instantiation without parameters.
+	 * It is intended to ensure that the class is always initialized with a valid resources file.
+	 */
 	param() = delete;
+	/**
+	 * @brief constructor
+	 * @param resources_file string, path to the resources file
+	 * @throws hlop_err, if the resources file cannot be opened, is empty, or has invalid format
+	 */
 	explicit param(const std::string &resources_file);
 	~param() = default;
 

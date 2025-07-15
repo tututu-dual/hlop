@@ -22,7 +22,7 @@ namespace hlop {
  * Derived classes should implement the specific algorithms and their predictions.
  */
 class collective {
-protected:
+public:
 	using predictor_handler = std::function<double(const hlop::node_list_t &, int)>;
 
 public:
@@ -57,6 +57,19 @@ public:
 	 * @return map<comm_pair, int>, a map of communication pairs to contention counts
 	 */
 	virtual const std::map<hlop::comm_pair, int> get_contentions(const std::vector<hlop::comm_pair> &pairs) const;
+
+protected:
+	double binomial_aux(const hlop::node_list_t &nl, int msg_size, int root = 0);
+	double ring_aux(const hlop::node_list_t &nl, int msg_size);
+	double recursive_doubling_aux(const hlop::node_list_t &nl, int msg_size);
+	double smp_aux(const hlop::node_list_t &nl, int msg_size);
+	double scatter_ring_allgather_aux(const hlop::node_list_t &nl, int msg_size);
+	double scatter_recursive_doubling_allgather_aux(const hlop::node_list_t &nl, int msg_size);
+	double reduce_scatter_allgather_aux(const hlop::node_list_t &nl, int msg_size);
+	double reduce_scatter_gather_aux(const hlop::node_list_t &nl, int msg_size);
+	double pairwise_aux(const hlop::node_list_t &nl, int msg_size);
+	double brucks_aux(const hlop::node_list_t &nl, int msg_size);
+	double k_brucks_aux(const hlop::node_list_t &nl, int msg_size);
 
 protected:
 	/**

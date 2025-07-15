@@ -13,8 +13,8 @@ namespace {
 /**
  * @brief class hlop err.
  * hlop_err is a runtime error class for hlop library.
- * It provides a formatted error message with file, function, and line number
- * @note use HLOP_ERR instead of this class.
+ * It provides a formatted error message with file, function, and line number.
+ * @note Use HLOP_ERR instead of this class.
  * This class is for internal use only.
  * Using HLOP_ERR will provide a formatted error message.
  */

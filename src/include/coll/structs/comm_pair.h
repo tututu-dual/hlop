@@ -19,11 +19,43 @@ public:
 	using pnr = std::pair<std::string, int>;
 
 public:
-	comm_pair();
+	/**
+	 * @brief default constructor for a communication pair
+	 * @note This constructor is deleted to prevent creating an empty communication pair.
+	 * It is intended to be used only with specific source and destination pairs.
+	 */
+	comm_pair() = delete;
+	/**
+	 * @brief constructor for a communication pair
+	 * @param src pnr, source node and rank pair
+	 * @param dst pnr, destination node and rank pair
+	 */
 	comm_pair(const hlop::comm_pair::pnr &src, const hlop::comm_pair::pnr &dst);
+	/**
+	 * @brief constructor for a communication pair with node names and ranks
+	 * @param src_node string, source node name
+	 * @param src_rank int, source rank
+	 * @param dst_node string, destination node name
+	 * @param dst_rank int, destination rank
+	 */
 	comm_pair(const std::string &src_node, int src_rank, const std::string &dst_node, int dst_rank);
+	/**
+	 * @brief constructor for a middle communication pair
+	 * @param self pnr, source and destination node and rank pair
+	 * @param sr comm_pair_ptr, shared pointer to the communication pair
+	 */
 	comm_pair(const hlop::comm_pair::pnr &self, hlop::comm_pair::comm_pair_ptr sr);
+	/**
+	 * @brief constructor for a middle communication pair with node name and rank
+	 * @param self_node string, source and destination node name
+	 * @param self_rank int, source and destination rank
+	 * @param sr comm_pair_ptr, shared pointer to the communication pair
+	 */
 	comm_pair(const std::string &self_node, int self_rank, hlop::comm_pair::comm_pair_ptr sr);
+	/**
+	 * @brief copy constructor for a communication pair
+	 * @param other comm_pair, another communication pair to copy from
+	 */
 	comm_pair(const hlop::comm_pair &other);
 	~comm_pair() = default;
 

@@ -28,12 +28,10 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl, int msg_size) {
 		// gen comm pair
 		std::vector<hlop::comm_pair> p;
 		for (const auto &h : hold) {
-			int src_idx = h;
-			int dst_idx = src_idx + mask;
-			if (dst_idx < procs) {
-				hold.emplace_back(dst_idx);
-				int src_rank = ranks[src_idx];
-				int dst_rank = ranks[dst_idx];
+			int src_rank = h;
+			int dst_rank = src_rank + mask;
+			if (dst_rank < procs) {
+				hold.emplace_back(dst_rank);
 				p.emplace_back(nl.get_node_id_by_rank(src_rank), src_rank, nl.get_node_id_by_rank(dst_rank), dst_rank);
 			}
 		}

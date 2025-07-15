@@ -93,7 +93,7 @@ hlop::exponential_params_t hlop::curve_fit_exponential(const std::vector<double>
 
 	// 检查收敛状态
 	if (status != GSL_SUCCESS)
-		HLOP_ERR("fitting did not converge.");
+		HLOP_ERR("fitting did not converge");
 
 	// 获取优化后的参数
 	hlop::exponential_params_t results;

@@ -1,10 +1,9 @@
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "structs/comm_pair.h"
-
-hlop::comm_pair::comm_pair() : src_pnr{}, dst_pnr{}, sendrecv{nullptr} {}
 
 hlop::comm_pair::comm_pair(const hlop::comm_pair::pnr &src, const hlop::comm_pair::pnr &dst)
     : src_pnr{src}, dst_pnr{dst}, sendrecv{nullptr} {

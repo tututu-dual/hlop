@@ -20,14 +20,14 @@ collective operations & structs.
 command line interface.
 - `main`: command line parser & execute.
 
-### dependencies
+## dependencies
 - GSL: install by pacman, yum, apt, etc.
 - gflags: install manually.
 
 
 # hlop (version 0.2)
 
-## 
+##  directory struct
 ```
 src
 ├── CMakeLists.txt
@@ -91,8 +91,6 @@ src
 
 ## dependencies
 
-## util
-
-### aux.h
-1. `is_pof2`:
-2. `pof2_ceil`:
+- `GSL`:
+- `magic_enum`:
+- `gflags`:

@@ -90,8 +90,8 @@ const std::string vtos(const std::vector<T> &v) {
  * @param e Enum, enum value
  * @return string_view, the name of the enum value
  * @throw hlop_err, if the enum value is invalid
- * @note this function uses magic_enum to convert enum to string
- * it will throw an hlop_err if the enum value is not valid
+ * @note This function uses magic_enum to convert enum to string.
+ * It will throw an hlop_err if the enum value is not valid.
  */
 template <typename Enum>
 std::string_view enum_name(Enum e) {
@@ -107,8 +107,8 @@ std::string_view enum_name(Enum e) {
  * @param name string, the name of the enum value
  * @return Enum, the enum value
  * @throw hlop_err, if the name is not a valid enum name
- * @note this function uses magic_enum to convert string to enum
- * it will throw an hlop_err if the name is not a valid enum name
+ * @note This function uses magic_enum to convert string to enum.
+ * It will throw an hlop_err if the name is not a valid enum name.
  */
 template <typename Enum>
 Enum enum_cast(const std::string &name) {

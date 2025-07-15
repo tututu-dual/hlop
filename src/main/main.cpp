@@ -34,7 +34,7 @@ hlop::exec_args_t hlop::parse_argument(int *argc, char ***argv) {
 
 	hlop::op_type_t op = hlop::enum_cast<hlop::op_type>(FLAGS_op);
 	hlop::algo_type_t algo = hlop::enum_cast<hlop::algo_type>(FLAGS_algo);
-	hlop::node_list_t nl{hlop::enum_cast<hlop::platform>(FLAGS_pf), FLAGS_nl, FLAGS_ppn};
+	hlop::node_list_t nl{hlop::enum_cast<hlop::platform>(FLAGS_pf), FLAGS_nl, FLAGS_ppn, hlop::rank_arrange::CYCLIC};
 	auto msz = hlop::stov<int>(FLAGS_msz);
 
 	return hlop::exec_args_t{.op = op, .algo = algo, .nl = std::move(nl), .msz = std::move(msz)};
