@@ -7,6 +7,12 @@
 #include <utility>
 
 namespace hlop {
+/**
+ * @brief class communication pair
+ * This class represents a pair of communication endpoints.
+ * It contains information about the source and destination nodes and ranks,
+ * and can be used to determine the nature of the communication (intra-node, inter-node, or middle pair).
+ */
 class comm_pair {
 public:
 	using comm_pair_ptr = std::shared_ptr<comm_pair>;
@@ -30,20 +36,30 @@ public:
 	friend std::ostream &operator<<(std::ostream &os, const hlop::comm_pair &self);
 
 public:
-	/// @brief check whether this pair is a middle pair(using sendrecv)
-	/// @return
+	/**
+	 * @brief check whether this pair is a middle pair(using sendrecv)
+	 * @return bool, true if it is a middle pair, false otherwise
+	 */
 	bool is_mid_pair() const;
-	/// @brief check whether this pair is in the same node
-	/// @return
+	/**
+	 * @brief check whether this pair is in the same node
+	 * @return bool, true if it is an intra-node pair, false otherwise
+	 */
 	bool is_intra_pair() const;
-	/// @brief check whether this pair is in different node
-	/// @return
+	/**
+	 * @brief check whether this pair is in different node
+	 * @return bool, true if it is an inter-node pair, false otherwise
+	 */
 	bool is_inter_pair() const;
-	/// @brief get src node
-	/// @return
+	/**
+	 * @brief get the source node in the pair
+	 * @return string, the source node name
+	 */
 	const std::string &get_src_node() const;
-	/// @brief get dst node
-	/// @return
+	/**
+	 * @brief get the destination node in the pair
+	 * @return string, the destination node name
+	 */
 	const std::string &get_dst_node() const;
 
 private:

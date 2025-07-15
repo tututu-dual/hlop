@@ -4,7 +4,13 @@
 #include <iostream>
 
 namespace hlop {
-/// @brief enum class for platform
+/**
+ * @brief enum class platform.
+ * The platforms are:
+ * - DF
+ * - TH
+ * - UNKNOWN
+ */
 enum class platform {
 	DF,
 	TH,

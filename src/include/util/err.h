@@ -2,6 +2,7 @@
 #define __ERR_H__
 
 #include <stdexcept>
+#include <string>
 
 #include "msg.h"
 
@@ -9,7 +10,14 @@
 	throw hlop_err { __FILE__, __func__, __LINE__, (msg) }
 
 namespace {
-/// @note use HLOP_ERR instead of this class
+/**
+ * @brief class hlop err.
+ * hlop_err is a runtime error class for hlop library.
+ * It provides a formatted error message with file, function, and line number
+ * @note use HLOP_ERR instead of this class.
+ * This class is for internal use only.
+ * Using HLOP_ERR will provide a formatted error message.
+ */
 class hlop_err : public std::runtime_error {
 public:
 	hlop_err(const char *file, const char *func, int line, const std::string &msg)

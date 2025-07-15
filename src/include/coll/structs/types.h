@@ -4,7 +4,17 @@
 #include <iostream>
 
 namespace hlop {
-/// @brief collective operation types
+/**
+ * @brief enum class operation type.
+ * The operation types are:
+ * - ALLGATHER
+ * - ALLREDUCE
+ * - ALLTOALL
+ * - BCAST
+ * - GATHER
+ * - REDUCE
+ * - SCATTER
+ */
 enum class op_type {
 	ALLGATHER,
 	ALLREDUCE,
@@ -18,7 +28,21 @@ typedef op_type op_type_t;
 
 std::ostream &operator<<(std::ostream &os, const hlop::op_type &op);
 
-/// @brief algorithm type
+/**
+ * @brief enum class algorithm type.
+ * The algorithm types are:
+ * - BINOMIAL
+ * - RING
+ * - RECURSIVE_DOUBLING
+ * - SMP
+ * - SCATTER_RING_ALLGATHER
+ * - SCATTER_RECURSIVE_DOUBLING_ALLGATHER
+ * - REDUCE_SCATTER_ALLGATHER
+ * - REDUCE_SCATTER_GATHER
+ * - PAIRWISE
+ * - BRUCKS
+ * - K_BRUCKS
+ */
 enum class algo_type {
 	BINOMIAL,
 	RING,
