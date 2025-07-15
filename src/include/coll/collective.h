@@ -61,7 +61,7 @@ public:
 protected:
 	double binomial_aux(const hlop::node_list_t &nl, int msg_size, int root = 0);
 	double ring_aux(const hlop::node_list_t &nl, int msg_size);
-	double recursive_doubling_aux(const hlop::node_list_t &nl, int msg_size);
+	double recursive_doubling_aux(const hlop::node_list_t &nl, int msg_size, int root = 0);
 	double smp_aux(const hlop::node_list_t &nl, int msg_size);
 	double scatter_ring_allgather_aux(const hlop::node_list_t &nl, int msg_size);
 	double scatter_recursive_doubling_allgather_aux(const hlop::node_list_t &nl, int msg_size);
