@@ -11,7 +11,7 @@
 
 #include "comm_pair.h"
 #include "platform.h"
-#include "structs/types.h"
+#include "struct/type.h"
 
 namespace hlop {
 /**

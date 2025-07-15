@@ -1,7 +1,7 @@
 #include "scatter.h"
 #include "collective.h"
-#include "structs/node_list.h"
-#include "structs/types.h"
+#include "struct/node_list.h"
+#include "struct/type.h"
 
 hlop::scatter::scatter() : hlop::collective() {
 	initialize_ftbl();

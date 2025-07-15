@@ -6,9 +6,10 @@
 
 #include "collective.h"
 #include "err.h"
+#include "m_debug.h"
 #include "param/param.h"
 #include "resources.h"
-#include "structs/comm_pair.h"
+#include "struct/comm_pair.h"
 
 const hlop::param_t hlop::collective::df_hlop_param{hlop::RESOURCE_BASE + hlop::DF_HLOP_PARAM};
 const hlop::collective::predictor_handler hlop::collective::unimpl =
@@ -54,10 +55,10 @@ const std::map<hlop::comm_pair, int> hlop::collective::get_contentions(
 
 double hlop::collective::binomial_aux(const hlop::node_list_t &nl, int msg_size, int root) {
 	double cost = 0.0;
-	const auto ranks = nl.get_ranks();
-	int procs = ranks.size(), mask = hlop::pof2_ceil(procs);
+	const auto &ranks = nl.get_ranks();
+	int comm_size = ranks.size(), mask = hlop::pof2_ceil(comm_size);
 	std::deque<int> hold;
-	hold.emplace_back(0);
+	hold.emplace_back(root);
 
 	mask >>= 1;
 	while (mask > 0) {
@@ -65,12 +66,18 @@ double hlop::collective::binomial_aux(const hlop::node_list_t &nl, int msg_size,
 		std::vector<hlop::comm_pair> p;
 		for (const auto &h : hold) {
 			int src_rank = h;
-			int dst_rank = src_rank + mask;
-			if (dst_rank < procs) {
+			int relative_rank = (src_rank >= root) ? (src_rank - root) : (src_rank - root + comm_size);
+			if (relative_rank + mask < comm_size) {
+				int dst_rank = src_rank + mask;
+				if (dst_rank >= comm_size)
+					dst_rank -= comm_size;
 				hold.emplace_back(dst_rank);
-				p.emplace_back(nl.get_node_id_by_rank(src_rank), src_rank, nl.get_node_id_by_rank(dst_rank), dst_rank);
+				p.emplace_back(nl.get_node_id_by_rank(src_rank), src_rank,
+				               nl.get_node_id_by_rank(dst_rank), dst_rank);
 			}
 		}
+		INFO("mask = {}", mask);
+		INFO_VEC("IN BCAST BINOMIAL:", p);
 		// get contention
 		double max_cost = 0;
 		const auto contention = get_contentions(p);
@@ -79,9 +86,16 @@ double hlop::collective::binomial_aux(const hlop::node_list_t &nl, int msg_size,
 			int nc = c.second;
 			const auto &cp = c.first;
 			if (cp.is_intra_pair())
-				tmp_cost = df_hlop_param.get_param(msg_size, "L0", "PING", std::to_string(nc));
+				tmp_cost = df_hlop_param.get_param(msg_size,
+				                                   "L0",
+				                                   "PING",
+				                                   std::to_string(nc));
 			else
-				tmp_cost = df_hlop_param.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)), "DUPLEX", std::to_string(nc));
+				tmp_cost = df_hlop_param.get_param(msg_size,
+				                                   "L1",
+				                                   std::to_string(nl.get_level(cp)),
+				                                   "DUPLEX",
+				                                   std::to_string(nc));
 			max_cost = std::max(tmp_cost, max_cost);
 		}
 		// next loop

@@ -1,5 +1,8 @@
 # executable cli program
-aux_source_directory(. MAIN_SRC)
+# aux_source_directory(. MAIN_SRC)
+set(MAIN_SRC
+	main.cpp
+)
 
 add_executable(main ${MAIN_SRC})
 target_include_directories(main PRIVATE ${SRC_DIR}/include/main)

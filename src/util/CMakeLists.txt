@@ -1,5 +1,9 @@
 # library paltform
-aux_source_directory(. UTIL_SRC)
+# aux_source_directory(. UTIL_SRC)
+set(UTIL_SRC
+	aux.cpp
+	fit.cpp
+)
 
 add_library(util STATIC ${UTIL_SRC})
 target_include_directories(util PUBLIC ${SRC_DIR}/include/util)

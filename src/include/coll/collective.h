@@ -9,9 +9,9 @@
 #include <vector>
 
 #include "param/param.h"
-#include "structs/comm_pair.h"
-#include "structs/node_list.h"
-#include "structs/types.h"
+#include "struct/comm_pair.h"
+#include "struct/node_list.h"
+#include "struct/type.h"
 
 namespace hlop {
 /**

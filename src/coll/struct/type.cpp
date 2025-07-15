@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "aux.h"
-#include "structs/types.h"
+#include "struct/type.h"
 
 std::ostream &hlop::operator<<(std::ostream &os, const hlop::op_type &op) {
 	os << hlop::enum_name(op);

@@ -1,6 +1,19 @@
 # library coll
-aux_source_directory(. COLL_SRC)
-aux_source_directory(structs COLL_SRC)
+# aux_source_directory(. COLL_SRC)
+# aux_source_directory(struct COLL_SRC)
+set(COLL_SRC
+	struct/comm_pair.cpp
+	struct/node_list.cpp
+	struct/type.cpp
+	allgather.cpp
+	allreduce.cpp
+	alltoall.cpp
+	bcast.cpp
+	collective.cpp
+	gather.cpp
+	reduce.cpp
+	scatter.cpp
+)
 
 add_library(coll STATIC ${COLL_SRC})
 target_include_directories(coll

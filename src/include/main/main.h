@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "structs/node_list.h"
-#include "structs/types.h"
+#include "struct/node_list.h"
+#include "struct/type.h"
 
 namespace hlop {
 /**

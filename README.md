@@ -13,7 +13,7 @@ some platform features.
 
 ## coll
 collective operations & structs.
-- `structs/`: structs describe platform, collective operation & algorithm, etc.
+- `struct/`: structs describe platform, collective operation & algorithm, etc.
 - `${operation}`: collective operation implementment.
 
 ## main
@@ -41,10 +41,10 @@ src
 │   ├── gather.cpp
 │   ├── reduce.cpp
 │   ├── scatter.cpp
-│   └── structs
+│   └── struct
 │       ├── comm_pair.cpp
 │       ├── node_list.cpp
-│       └── types.cpp
+│       └── type.cpp
 ├── include
 │   ├── coll
 │   │   ├── allgather.h
@@ -55,10 +55,10 @@ src
 │   │   ├── gather.h
 │   │   ├── reduce.h
 │   │   ├── scatter.h
-│   │   └── structs
+│   │   └── struct
 │   │       ├── comm_pair.h
 │   │       ├── node_list.h
-│   │       └── types.h
+│   │       └── type.h
 │   ├── main
 │   │   └── main.h
 │   ├── platform

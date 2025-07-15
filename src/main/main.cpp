@@ -8,7 +8,7 @@
 #include "main.h"
 #include "platform.h"
 #include "scatter.h"
-#include "structs/types.h"
+#include "struct/type.h"
 
 DEFINE_string(op, "", "collective operation type");
 DEFINE_string(algo, "", "collective operation algorithm type");

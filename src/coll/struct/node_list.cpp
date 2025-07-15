@@ -10,8 +10,8 @@
 #include "msg.h"
 #include "node/df_node_parser.h"
 #include "platform.h"
-#include "structs/node_list.h"
-#include "structs/types.h"
+#include "struct/node_list.h"
+#include "struct/type.h"
 
 const std::unordered_map<hlop::rank_arrange, std::function<int(int, int)>> hlop::node_list::rank_arrange_map = {
     {hlop::rank_arrange::BLOCK, [](int rank, int nnode) -> int { return rank / nnode; }},

@@ -1,7 +1,7 @@
 #include <memory>
 
 #include "m_debug.h"
-#include "structs/comm_pair.h"
+#include "struct/comm_pair.h"
 
 int main(int argc, char const *argv[]) {
 	hlop::comm_pair_t p1{"i10r4n03", 3, "i10r4n04", 4};

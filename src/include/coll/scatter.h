@@ -2,7 +2,7 @@
 #define __SCATTER_H__
 
 #include "collective.h"
-#include "structs/node_list.h"
+#include "struct/node_list.h"
 
 namespace hlop {
 /**
