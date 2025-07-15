@@ -1,0 +1,73 @@
+if(NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
+	message(FATAL_ERROR "Cannot find install manifest: @CMAKE_BINARY_DIR@/install_manifest.txt")
+endif()
+
+file(READ "@CMAKE_BINARY_DIR@/install_manifest.txt" files)
+string(REGEX REPLACE "\n" ";" files "${files}")
+
+get_filename_component(INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@" ABSOLUTE)
+string(REGEX REPLACE "/$" "" INSTALL_PREFIX "${INSTALL_PREFIX}")  # 移除末尾的 /
+
+message(STATUS "Removing installed files...")
+foreach(file ${files})
+	if(EXISTS "${file}" OR IS_SYMLINK "${file}")
+		message(STATUS "Removing: ${file}")
+		execute_process(
+			COMMAND "@CMAKE_COMMAND@" -E remove "${file}"
+			OUTPUT_VARIABLE rm_out
+			RESULT_VARIABLE rm_retval
+		)
+		if(NOT "${rm_retval}" STREQUAL 0)
+			message(WARNING "Failed to remove: ${file}")
+		endif()
+	else()
+		message(STATUS "File does not exist (already removed?): ${file}")
+	endif()
+endforeach()
+
+message(STATUS "Cleaning up empty directories under ${INSTALL_PREFIX}...")
+set(dir_set "")
+
+foreach(file ${files})
+	get_filename_component(dir "${file}" DIRECTORY)
+
+	while(IS_DIRECTORY "${dir}" AND dir MATCHES "^${INSTALL_PREFIX}/.*")
+		list(APPEND dir_set "${dir}")
+		get_filename_component(parent "${dir}" DIRECTORY)
+		if(parent STREQUAL dir)
+			break()
+		endif()
+		set(dir "${parent}")
+	endwhile()
+endforeach()
+
+list(REMOVE_DUPLICATES dir_set)
+list(SORT dir_set ORDER DESCENDING)
+
+foreach(dir ${dir_set})
+	if(IS_DIRECTORY "${dir}")
+		file(GLOB dir_content "${dir}/*" "${dir}/.*")
+		list(LENGTH dir_content content_count)
+		
+		if(content_count EQUAL 2)
+			file(GLOB hidden "${dir}/.*")
+			list(LENGTH hidden hidden_count)
+			if(hidden_count EQUAL 2)
+				set(content_count 0)
+			endif()
+		endif()
+
+		if(content_count EQUAL 0)
+			message(STATUS "Removing empty directory: ${dir}")
+			execute_process(
+				COMMAND "@CMAKE_COMMAND@" -E remove_directory "${dir}"
+				OUTPUT_VARIABLE rm_out
+				RESULT_VARIABLE rm_retval
+			)
+			if(NOT "${rm_retval}" STREQUAL 0)
+				message(WARNING "Failed to remove directory: ${dir}")
+			endif()
+		endif()
+  	endif()
+endforeach()
+message(STATUS "Uninstall completed")
