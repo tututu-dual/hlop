@@ -19,16 +19,17 @@ public:
 private:
 	/**
 	 * @brief predicts the performance of the binomial algorithm.
-	 * @param nl node_list, the node list to use for prediction
-	 * @param msg_size int, the message size to use for prediction
-	 * @return double, the predicted performance of the binomial algorithm
+	 * @param nl node_list, the node list to use for prediction.
+	 * @param msg_size int, the message size to use for prediction.
+	 * @param dp algo_diff_param, the algorithm-specific parameters (e.g., root rank).
+	 * @return double, the predicted performance of the binomial algorithm.
 	 */
-	double binomial(const hlop::node_list_t &nl, int msg_size);
+	double binomial(const hlop::node_list_t &nl, int msg_size, const hlop::algo_diff_param_t &dp);
 
 private:
 	/**
 	 * @brief Initializes the function table for the broadcast operation.
-	 * @return void
+	 * @return void.
 	 */
 	void initialize_ftbl() override;
 };

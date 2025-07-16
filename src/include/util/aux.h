@@ -13,36 +13,36 @@
 
 namespace hlop {
 /**
- * @brief check whether the given number is the power of 2
- * @param x int, given number
- * @return return true when x is the power of 2
- * @throw hlop_err, if x is not a positive integer
+ * @brief check whether the given number is the power of 2.
+ * @param x int, given number.
+ * @return return true when x is the power of 2.
+ * @throw hlop_err, if x is not a positive integer.
  */
 bool is_pof2(int x);
 
 /**
- * @brief round up to the next power of 2
- * @param x: int32, given number
- * @return return the next power of 2 of x
- * @throw hlop_err, if x is not a positive integer
+ * @brief round up to the next power of 2.
+ * @param x: int32, given number.
+ * @return return the next power of 2 of x.
+ * @throw hlop_err, if x is not a positive integer.
  */
 int pof2_ceil(int x);
 
 /**
- * @brief  round down to the previous power of 2
- * @param x int32, given number
- * @return return the previous power of 2 of x
- * @throw hlop_err, if x is not a positive integer
+ * @brief  round down to the previous power of 2.
+ * @param x int32, given number.
+ * @return return the previous power of 2 of x.
+ * @throw hlop_err, if x is not a positive integer.
  */
 int pof2_floor(int x);
 
 /**
- * @brief string to vector conversion
- * @tparam T type of the vector item
- * @param l string, string format like "1,2,3,4,5"
- * @param skip int, default 0, number of items to skip from the beginning
- * @return vector<T>, converted from the string
- * @throw hlop_err, if the string contains invalid items
+ * @brief string to vector conversion.
+ * @tparam T type of the vector item.
+ * @param l string, string format like "1,2,3,4,5".
+ * @param skip int, default 0, number of items to skip from the beginning.
+ * @return vector<T>, converted from the string.
+ * @throw hlop_err, if the string contains invalid items.
  * @note The string is split by comma, and the items are converted to type T.
  * If the conversion fails, an hlop_err is thrown.
  * If skip is greater than the number of items, the result will be empty.
@@ -71,10 +71,10 @@ const std::vector<T> stov(const std::string &l, int skip = 0) {
 }
 
 /**
- * @brief vector to string conversion
- * @tparam T type of the vector item
- * @param v vector<T>, vector to be converted
- * @return string, converted from the vector like "1, 2, 3, 4, 5, "
+ * @brief vector to string conversion.
+ * @tparam T type of the vector item.
+ * @param v vector<T>, vector to be converted.
+ * @return string, converted from the vector like "1, 2, 3, 4, 5, ".
  */
 template <typename T>
 const std::string vtos(const std::vector<T> &v) {
@@ -85,11 +85,11 @@ const std::string vtos(const std::vector<T> &v) {
 }
 
 /**
- * @brief enum to string conversion
- * @tparam Enum enum type
- * @param e Enum, enum value
- * @return string_view, the name of the enum value
- * @throw hlop_err, if the enum value is invalid
+ * @brief enum to string conversion.
+ * @tparam Enum enum type.
+ * @param e Enum, enum value.
+ * @return string_view, the name of the enum value.
+ * @throw hlop_err, if the enum value is invalid.
  * @note This function uses magic_enum to convert enum to string.
  * It will throw an hlop_err if the enum value is not valid.
  */
@@ -102,11 +102,11 @@ std::string_view enum_name(Enum e) {
 }
 
 /**
- * @brief string to enum conversion
- * @tparam Enum enum type
- * @param name string, the name of the enum value
- * @return Enum, the enum value
- * @throw hlop_err, if the name is not a valid enum name
+ * @brief string to enum conversion.
+ * @tparam Enum enum type.
+ * @param name string, the name of the enum value.
+ * @return Enum, the enum value.
+ * @throw hlop_err, if the name is not a valid enum name.
  * @note This function uses magic_enum to convert string to enum.
  * It will throw an hlop_err if the name is not a valid enum name.
  */

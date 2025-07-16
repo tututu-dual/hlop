@@ -14,7 +14,7 @@
 #include "fit.h"
 
 namespace hlop {
-/// @brief predefined exponential function 1
+/// @brief predefined exponential function 1.
 extern const std::function<double(double, hlop::exponential_params_t)> exp_fit_func_2;
 
 /**
@@ -31,82 +31,82 @@ extern const std::function<double(double, hlop::exponential_params_t)> exp_fit_f
 class param {
 public:
 	/**
-	 * @brief default constructor
+	 * @brief default constructor.
 	 * @note This constructor is deleted to prevent instantiation without parameters.
 	 * It is intended to ensure that the class is always initialized with a valid resources file.
 	 */
 	param() = delete;
 	/**
-	 * @brief constructor
-	 * @param resources_file string, path to the resources file
-	 * @throws hlop_err, if the resources file cannot be opened, is empty, or has invalid format
+	 * @brief constructor.
+	 * @param resources_file string, path to the resources file.
+	 * @throws hlop_err, if the resources file cannot be opened, is empty, or has invalid format.
 	 */
 	explicit param(const std::string &resources_file);
 	~param() = default;
 
 public:
 	/**
-	 * @brief get all categories
-	 * @return vector<string_view>, containing all categories
+	 * @brief get all categories.
+	 * @return vector<string_view>, containing all categories.
 	 */
 	const std::vector<std::string_view> get_categorys() const;
 	/**
-	 * @brief get message size range
-	 * @return vector<double>, containing the message size range in powers of 2
+	 * @brief get message size range.
+	 * @return vector<double>, containing the message size range in powers of 2.
 	 */
 	const std::vector<double> &get_msg_size_range() const;
 
 public:
 	/**
-	 * @brief check if a category exists
-	 * @tparam Labels labels type
-	 * @param labels Labels, concatenated labels to a category
-	 * @return bool, true if the category exists, false otherwise
+	 * @brief check if a category exists.
+	 * @tparam Labels labels type.
+	 * @param labels Labels, concatenated labels to a category.
+	 * @return bool, true if the category exists, false otherwise.
 	 */
 	template <typename... Labels>
 	bool has_category(const Labels &...labels);
 	/**
-	 * @brief get parameter based on message size and labels
-	 * @tparam Labels labels type
-	 * @param msg_size int, message size
-	 * @param labels Labels, concatenated labels to a category
-	 * @return double, the parameter value for the given message size and labels
+	 * @brief get parameter based on message size and labels.
+	 * @tparam Labels labels type.
+	 * @param msg_size int, message size.
+	 * @param labels Labels, concatenated labels to a category.
+	 * @return double, the parameter value for the given message size and labels.
 	 */
 	template <typename... Labels>
 	const double get_param(int msg_size, const Labels &...labels) const;
 
 private:
 	/**
-	 * @brief load parameters from resources file, auxiliary function
-	 * @param resources_file string, path to the resources file
-	 * @throws hlop_err, if the resources file cannot be opened or is empty or has invalid format
+	 * @brief load parameters from resources file, auxiliary function.
+	 * @param resources_file string, path to the resources file.
+	 * @throws hlop_err, if the resources file cannot be opened or is empty or has invalid format.
 	 */
 	void load_params(const std::string &resources_file);
 	/**
-	 * @brief concatenate labels to a category, auxiliary function
-	 * @tparam Labels labels type
-	 * @param labels Labels, concatenated labels to a category
-	 * @return string, the concatenated category name
+	 * @brief concatenate labels to a category, auxiliary function.
+	 * @tparam Labels labels type.
+	 * @param labels Labels, concatenated labels to a category.
+	 * @return string, the concatenated category name.
 	 */
 	template <typename... Labels>
 	const std::string get_category_with_labels(const Labels &...labels) const;
 	/**
-	 * @brief check if a category exists, auxiliary function
-	 * @param param_category string, the category to check
-	 * @return bool, true if the category exists, false otherwise
+	 * @brief check if a category exists, auxiliary function.
+	 * @param param_category string, the category to check.
+	 * @return bool, true if the category exists, false otherwise.
 	 */
 	bool has_category(const std::string &param_category) const;
 	/**
-	 * @brief get parameters for a specific category, auxiliary function
-	 * @param param_category string, the category to get parameters for
-	 * @return vector<double>, the parameters for the given category
-	 * @throws hlop_err, if the category does not exist
+	 * @brief get parameters for a specific category, auxiliary function.
+	 * @param param_category string, the category to get parameters for.
+	 * @return vector<double>, the parameters for the given category.
+	 * @throws hlop_err, if the category does not exist.
 	 */
 	const std::vector<double> &get_params(const std::string &param_category) const;
 	/**
-	 * @brief fit function for parameters that are not present in the parameter file, auxiliary function
-	 * @param y vector<double>, the parameters to fit
-	 * @return function<double(double)>, a function that fits the parameters
+	 * @brief fit function for parameters that are not present in the parameter file, auxiliary function.
+	 * @param y vector<double>, the parameters to fit.
+	 * @return function<double(double)>, a function that fits the parameters.
 	 */
 	std::function<double(double)> fit(const std::vector<double> &y) const;
 

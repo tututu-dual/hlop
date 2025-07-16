@@ -21,10 +21,10 @@ public:
 	static const std::regex NODE_LIST_REGEX;
 
 	/**
-	 * @brief parse a node list string
-	 * @param node_list_str string, e.g., "node1,node2,node3" or "node[1-5],node6,node7"
-	 * @return vector<string>, vector of node names
-	 * @throws hlop_err, if node format is invalid
+	 * @brief parse a node list string.
+	 * @param node_list_str string, e.g., "node1,node2,node3" or "node[1-5],node6,node7".
+	 * @return vector<string>, vector of node names.
+	 * @throws hlop_err, if node format is invalid.
 	 */
 	static const std::vector<std::string> parse_node_list(const std::string &node_list_str);
 };

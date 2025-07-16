@@ -34,7 +34,10 @@ hlop::exec_args_t hlop::parse_argument(int *argc, char ***argv) {
 
 	hlop::op_type_t op = hlop::enum_cast<hlop::op_type>(FLAGS_op);
 	hlop::algo_type_t algo = hlop::enum_cast<hlop::algo_type>(FLAGS_algo);
-	hlop::node_list_t nl{hlop::enum_cast<hlop::platform>(FLAGS_pf), FLAGS_nl, FLAGS_ppn, hlop::rank_arrange::CYCLIC};
+	hlop::node_list_t nl{hlop::enum_cast<hlop::platform>(FLAGS_pf),
+	                     FLAGS_nl,
+	                     FLAGS_ppn,
+	                     hlop::rank_arrange::CYCLIC};
 	auto msz = hlop::stov<int>(FLAGS_msz);
 
 	return hlop::exec_args_t{.op = op, .algo = algo, .nl = std::move(nl), .msz = std::move(msz)};
@@ -53,7 +56,7 @@ double hlop::execute_with_arg(hlop::op_type_t op, hlop::algo_type_t algo, hlop::
 	}
 	case hlop::op_type::BCAST: {
 		hlop::bcast predictor;
-		return predictor.predict(algo, nl, msg_size);
+		return predictor.predict(algo, nl, msg_size, 0);
 		break;
 	}
 	case hlop::op_type::GATHER: {
@@ -64,7 +67,7 @@ double hlop::execute_with_arg(hlop::op_type_t op, hlop::algo_type_t algo, hlop::
 	}
 	case hlop::op_type::SCATTER: {
 		hlop::scatter predictor;
-		return predictor.predict(algo, nl, msg_size);
+		return predictor.predict(algo, nl, msg_size, 0);
 		break;
 	}
 	default: {
@@ -75,7 +78,9 @@ double hlop::execute_with_arg(hlop::op_type_t op, hlop::algo_type_t algo, hlop::
 	return 0.0;
 }
 
-std::vector<double> hlop::execute_with_args(hlop::op_type_t op, hlop::algo_type_t algo, hlop::node_list_t nl,
+std::vector<double> hlop::execute_with_args(hlop::op_type_t op,
+                                            hlop::algo_type_t algo,
+                                            hlop::node_list_t nl,
                                             std::vector<int> msg_sizes) {
 	std::vector<double> res;
 	for (const auto &m : msg_sizes)

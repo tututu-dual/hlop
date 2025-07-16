@@ -19,9 +19,8 @@
 
 #define INFO_VEC(msg, vec)                    \
 	do {                                      \
-		INFO("{}; n = {}:", msg, vec.size()); \
-		const auto s = hlop::vtos(vec);       \
-		INFO(s);                              \
+		INFO("{}(n = {}):", msg, vec.size()); \
+		INFO(hlop::vtos(vec));                \
 	} while (0)
 #else
 #define INFO(fmt, ...) \

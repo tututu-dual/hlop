@@ -49,7 +49,8 @@ auto rect2 = [](int m, int n) -> double {
 int main(int argc, char const *argv[]) {
 	hlop::node_list_t l{hlop::platform::DF, "g11r4n[01-03]", 16, hlop::rank_arrange::CYCLIC};
 	INFO("node list: {}", l);
-	hlop::bcast c{};
-	INFO("result: {}", c.predict(hlop::algo_type::BINOMIAL, l, 4));
+	hlop::bcast b{};
+	auto res = b.predict(hlop::algo_type::BINOMIAL, l, 4, 0);
+	INFO("result: {}", res);
 	return 0;
 }

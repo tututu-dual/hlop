@@ -14,7 +14,7 @@
 #include "struct/type.h"
 
 const std::unordered_map<hlop::rank_arrange, std::function<int(int, int)>> hlop::node_list::rank_arrange_map = {
-    {hlop::rank_arrange::BLOCK, [](int rank, int nnode) -> int { return rank / nnode; }},
+    {hlop::rank_arrange::BLOCK, [](int rank, int ppn) -> int { return rank / ppn; }},
     {hlop::rank_arrange::CYCLIC, [](int rank, int nnode) -> int { return rank % nnode; }},
     {hlop::rank_arrange::PLANE, [](int rank, int nnode) -> int {
 	     HLOP_ERR("plane rank arrangement is not implemented yet");
@@ -47,7 +47,10 @@ hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str
 	}
 }
 
-hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, std::vector<int> ranks)
+hlop::node_list::node_list(hlop::platform_t pf,
+                           const std::string &node_list_str,
+                           int ppn,
+                           std::vector<int> ranks)
     : node_list(pf, node_list_str, ppn) {
 	if ((*std::max_element(ranks.begin(), ranks.end())) > ppn * nlist.size() ||
 	    (*std::min_element(ranks.begin(), ranks.end())) < 0)
@@ -56,7 +59,10 @@ hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str
 		rmap.emplace(ranks[i], nlist.at(i / ppn));
 }
 
-hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::rank_arrange_t rule)
+hlop::node_list::node_list(hlop::platform_t pf,
+                           const std::string &node_list_str,
+                           int ppn,
+                           hlop::rank_arrange_t rule)
     : node_list(pf, node_list_str, ppn) {
 	for (int i = 0; i < ppn * nlist.size(); ++i)
 		rmap.emplace(i, nlist.at(rank_arrange_map.at(rule)(i, nlist.size())));
@@ -78,6 +84,8 @@ const int hlop::node_list::get_ppn() const { return nproc_per_node; }
 
 const std::unordered_map<int, const std::string &> &hlop::node_list::get_ranks() const { return rmap; }
 
+const int hlop::node_list::get_rank_num() const { return rmap.size(); }
+
 const hlop::platform_t hlop::node_list::get_platform() const { return platform; }
 
 const int hlop::node_list::get_level(const std::string &node1, const std::string &node2) const {
@@ -87,7 +95,8 @@ const int hlop::node_list::get_level(const std::string &node1, const std::string
 		HLOP_ERR(hlop::format("node {} not in this list", node2));
 
 	std::smatch m1, m2;
-	if (std::regex_match(node1, m1, node_regex) && std::regex_match(node2, m2, node_regex)) {
+	if (std::regex_match(node1, m1, node_regex) &&
+	    std::regex_match(node2, m2, node_regex)) {
 		int len = m1.size();
 		for (int i = 1; i < len; ++i) {
 			if (m1[i] != m2[i])
@@ -103,6 +112,8 @@ const int hlop::node_list::get_level(const hlop::comm_pair_t &cp) const {
 }
 
 const std::string &hlop::node_list::get_node_id_by_rank(int rank) const {
+	if (rmap.find(rank) == rmap.end())
+		HLOP_ERR(hlop::format("rank {} not in this list", rank));
 	return rmap.at(rank);
 }
 

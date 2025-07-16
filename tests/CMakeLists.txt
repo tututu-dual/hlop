@@ -32,12 +32,17 @@ set(TYPE_TEST_SRC test_type.cpp)
 add_executable(test_type ${TYPE_TEST_SRC})
 target_link_libraries(test_type coll)
 
+# test allgather
+set(ALLGATHER_TEST_SRC test_allgather.cpp)
+add_executable(test_allgather ${ALLGATHER_TEST_SRC})
+target_link_libraries(test_allgather coll)
+
 # test bcast
 set(BCAST_TEST_SRC test_bcast.cpp)
 add_executable(test_bcast ${BCAST_TEST_SRC})
 target_link_libraries(test_bcast coll)
 
-# test collective auxiliary functions
-set(COLL_AUX_TEST_SRC test_coll_aux.cpp)
-add_executable(test_coll_aux ${COLL_AUX_TEST_SRC})
-target_link_libraries(test_coll_aux coll)
+# test scatter
+set(SCATTER_TEST_SRC test_scatter.cpp)
+add_executable(test_scatter ${SCATTER_TEST_SRC})
+target_link_libraries(test_scatter coll)

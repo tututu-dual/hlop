@@ -42,9 +42,12 @@ hlop::comm_pair &hlop::comm_pair::operator=(hlop::comm_pair &&other) noexcept {
 
 bool hlop::comm_pair::operator==(const hlop::comm_pair &other) const {
 	if (!is_mid_pair() && !other.is_mid_pair())
-		return (get_src_node() == other.get_src_node() && get_dst_node() == other.get_dst_node());
+		return (get_src_node() == other.get_src_node() &&
+		        get_dst_node() == other.get_dst_node());
 	else if (is_mid_pair() && other.is_mid_pair())
-		return (get_src_node() == other.get_src_node() && get_dst_node() == other.get_dst_node() && *sendrecv == *other.sendrecv);
+		return (get_src_node() == other.get_src_node() &&
+		        get_dst_node() == other.get_dst_node() &&
+		        *sendrecv == *other.sendrecv);
 	else
 		return false;
 }
@@ -60,7 +63,9 @@ const std::string &hlop::comm_pair::get_src_node() const { return src_pnr.first;
 const std::string &hlop::comm_pair::get_dst_node() const { return dst_pnr.first; }
 
 bool hlop::operator<(const hlop::comm_pair &lhs, const hlop::comm_pair &rhs) {
-	return (lhs.get_src_node() < rhs.get_src_node() || (lhs.get_src_node() == rhs.get_src_node() && lhs.get_dst_node() < rhs.get_dst_node()));
+	return (lhs.get_src_node() < rhs.get_src_node() ||
+	        (lhs.get_src_node() == rhs.get_src_node() &&
+	         lhs.get_dst_node() < rhs.get_dst_node()));
 }
 
 std::ostream &hlop::operator<<(std::ostream &os, const hlop::comm_pair &self) {

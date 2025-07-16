@@ -15,7 +15,9 @@ const std::regex hlop::df_node_parser::NODE_REGEX{R"(([a-zA-Z]\d+)([a-zA-Z]\d+)(
 
 const std::vector<std::string> hlop::df_node_parser::parse_node_list(const std::string &node_list_str) {
 	std::vector<std::string> nodes;
-	auto beg = std::sregex_iterator(node_list_str.begin(), node_list_str.end(), NODE_LIST_REGEX);
+	auto beg = std::sregex_iterator(node_list_str.begin(),
+	                                node_list_str.end(),
+	                                NODE_LIST_REGEX);
 	auto end = std::sregex_iterator();
 
 	for (auto it = beg; it != end; ++it) {
