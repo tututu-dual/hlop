@@ -42,7 +42,7 @@ double hlop::scatter::binomial(const hlop::node_list_t &nl,
 					subtree_msg_size[rank] = scatter_size * mask;
 					hlop::comm_pair tcp{nl.get_node_id_by_rank(rank), rank,
 					                    nl.get_node_id_by_rank(dst_rank), dst_rank};
-					INFO("{}, transport message size: {}", tcp, subtree_msg_size[dst_rank]);
+					DEBUG("{}, transport message size: {}", tcp, subtree_msg_size[dst_rank]);
 					p.emplace_back(std::move(tcp));
 				}
 			}

@@ -9,6 +9,7 @@
 
 #include "err.h"
 #include "fit.h"
+#include "m_debug.h"
 #include "msg.h"
 #include "param/param.h"
 
@@ -60,6 +61,7 @@ const std::vector<double> &hlop::param::get_params(const std::string &param_cate
 		HLOP_ERR(hlop::format("parameter category not found: {}", param_category));
 
 	const auto &it = params.find(param_category);
+	INFO("{}", it->first);
 	return it->second;
 }
 

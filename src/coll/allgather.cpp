@@ -47,7 +47,7 @@ double hlop::allgather::recursive_doubling(const hlop::node_list_t &nl,
 				int dst_rank = (relative_dst + root) % comm_size;
 				hlop::comm_pair tcp{nl.get_node_id_by_rank(rank), rank,
 				                    nl.get_node_id_by_rank(dst_rank), dst_rank};
-				INFO("{}, transport message size: {}", tcp, msg_size);
+				DEBUG("{}, transport message size: {}", tcp, msg_size);
 				p.emplace_back(std::move(tcp));
 			}
 		}

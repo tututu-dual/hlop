@@ -8,43 +8,31 @@
 #include "aux.h"
 #include "err.h"
 #include "msg.h"
-#include "node/df_node_parser.h"
 #include "platform.h"
 #include "struct/node_list.h"
 #include "struct/type.h"
 
-const std::unordered_map<hlop::rank_arrange, std::function<int(int, int)>> hlop::node_list::rank_arrange_map = {
-    {hlop::rank_arrange::BLOCK, [](int rank, int ppn) -> int { return rank / ppn; }},
-    {hlop::rank_arrange::CYCLIC, [](int rank, int nnode) -> int { return rank % nnode; }},
-    {hlop::rank_arrange::PLANE, [](int rank, int nnode) -> int {
-	     HLOP_ERR("plane rank arrangement is not implemented yet");
-	     return -1; // unreachable
-     }},
-    {hlop::rank_arrange::ARBITRARY, [](int rank, int nnode) -> int {
-	     HLOP_ERR("arbitrary rank arrangement is not implemented yet");
-	     return -1; // unreachable
-     }}};
-
-hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn) {
-	if (ppn > hlop::df_node_parser::NODE_CORES)
-		HLOP_ERR(hlop::format("number of process per node(={}) must less equal to {}", ppn, hlop::df_node_parser::NODE_CORES));
-
-	switch (pf) {
-	case hlop::platform::DF:
-		nlist = hlop::df_node_parser::parse_node_list(node_list_str);
-		platform = hlop::platform::DF;
-		node_cores = hlop::df_node_parser::NODE_CORES;
-		numa_cores = hlop::df_node_parser::NUMA_CORES;
-		max_network_level = hlop::df_node_parser::MAX_NETWORK_LEVEL;
-		nproc_per_node = ppn;
-		node_regex = hlop::df_node_parser::NODE_REGEX;
-		break;
-	case hlop::platform::TH:
-		HLOP_ERR("TH platform is not implemented yet");
-		break;
-	default:
-		break;
-	}
+hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn)
+    : platform(pf),
+      node_cores(hlop::node_parser::get_node_cores(pf)),
+      numa_cores(hlop::node_parser::get_numa_cores(pf)),
+      max_network_level(hlop::node_parser::get_max_network_level(pf)),
+      node_regex(hlop::node_parser::get_node_regex(pf)),
+      nlist(hlop::node_parser::parser_node_list(pf, node_list_str)),
+      nproc_per_node(ppn),
+      rank_arrange_map(
+          {{hlop::rank_arrange::BLOCK, [this](int rank) -> int { return rank / nproc_per_node; }},
+           {hlop::rank_arrange::CYCLIC, [this](int rank) -> int { return rank % nlist.size(); }},
+           {hlop::rank_arrange::PLANE, [this](int rank) -> int {
+	            HLOP_ERR("plane rank arrangement is not implemented yet");
+	            return -1; // unreachable
+            }},
+           {hlop::rank_arrange::ARBITRARY, [this](int rank) -> int {
+	            HLOP_ERR("arbitrary rank arrangement is not implemented yet");
+	            return -1; // unreachable
+            }}}) {
+	if (ppn > node_cores)
+		HLOP_ERR(hlop::format("number of process per node(={}) must less equal to {}", ppn, node_cores));
 }
 
 hlop::node_list::node_list(hlop::platform_t pf,
@@ -65,7 +53,7 @@ hlop::node_list::node_list(hlop::platform_t pf,
                            hlop::rank_arrange_t rule)
     : node_list(pf, node_list_str, ppn) {
 	for (int i = 0; i < ppn * nlist.size(); ++i)
-		rmap.emplace(i, nlist.at(rank_arrange_map.at(rule)(i, nlist.size())));
+		rmap.emplace(i, nlist.at(rank_arrange_map.at(rule)(i)));
 }
 
 const int hlop::node_list::get_node_cores() const { return node_cores; }
@@ -117,7 +105,7 @@ const std::string &hlop::node_list::get_node_id_by_rank(int rank) const {
 	return rmap.at(rank);
 }
 
-const std::vector<std::string_view> hlop::node_list::get_top_k_nodes(int k) const {
+std::vector<std::string_view> hlop::node_list::get_top_k_nodes(int k) const {
 	if (k <= 0 || k > get_node_num())
 		HLOP_ERR(hlop::format("value k(={}): should be in range [1, {}]", k, get_node_num()));
 

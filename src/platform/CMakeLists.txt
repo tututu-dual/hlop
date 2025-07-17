@@ -11,8 +11,11 @@ set(PLATFORM_SRC
 add_library(platform STATIC ${PLATFORM_SRC})
 target_include_directories(platform PUBLIC ${SRC_ROOT}/include/platform)
 
-if(PLATFORM_DEBUG)
+if(PLATFORM_INFO)
 	target_compile_definitions(platform PRIVATE M_DEBUG)
+endif()
+if(PLATFORM_DEBUG)
+	target_compile_definitions(platform PRIVATE M_DEBUG_VERBOSE)
 endif()
 
 target_link_libraries(platform PUBLIC util)

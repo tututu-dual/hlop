@@ -125,7 +125,7 @@ public:
 	 * @return vector<string_view>, a vector of the top k node names.
 	 * @throws hlop_err, if k is not in range [1, node_num].
 	 */
-	const std::vector<std::string_view> get_top_k_nodes(int k) const;
+	std::vector<std::string_view> get_top_k_nodes(int k) const;
 
 public:
 	friend std::ostream &operator<<(std::ostream &os, const node_list &nl);
@@ -148,18 +148,16 @@ private:
 	bool has_node(const std::string &node) const;
 
 private:
-	std::vector<std::string> nlist;
+	const std::vector<std::string> nlist;
 	std::unordered_map<int, const std::string &> rmap;
+	const int nproc_per_node;
 
-	hlop::platform_t platform;
-	int node_cores;
-	int numa_cores;
-	int max_network_level;
-	int nproc_per_node;
-	std::regex node_regex;
-
-private:
-	static const std::unordered_map<hlop::rank_arrange, std::function<int(int, int)>> rank_arrange_map;
+	const hlop::platform_t platform;
+	const int node_cores;
+	const int numa_cores;
+	const int max_network_level;
+	const std::regex node_regex;
+	const std::unordered_map<hlop::rank_arrange, std::function<int(int)>> rank_arrange_map;
 };
 typedef node_list node_list_t;
 

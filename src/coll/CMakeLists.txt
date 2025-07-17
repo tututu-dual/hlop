@@ -21,8 +21,11 @@ target_include_directories(coll
 	PUBLIC ${CMAKE_BINARY_DIR}/include
 )
 
-if(COLL_DEBUG)
+if(COLL_INFO)
 	target_compile_definitions(coll PRIVATE M_DEBUG)
+endif()
+if(COLL_DEBUG)
+	target_compile_definitions(coll PRIVATE M_DEBUG_VERBOSE)
 endif()
 
 target_link_libraries(coll PUBLIC platform)

@@ -43,7 +43,7 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl,
 					has_value[dst_rank] = true;
 					hlop::comm_pair tcp{nl.get_node_id_by_rank(rank), rank,
 					                    nl.get_node_id_by_rank(dst_rank), dst_rank};
-					INFO("{}, transport message size: {}", tcp, msg_size);
+					DEBUG("{}, transport message size: {}", tcp, msg_size);
 					p.emplace_back(std::move(tcp));
 				}
 			}
