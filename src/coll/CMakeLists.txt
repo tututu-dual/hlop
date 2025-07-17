@@ -21,7 +21,7 @@ target_include_directories(coll
 	PUBLIC ${CMAKE_BINARY_DIR}/include
 )
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(COLL_DEBUG)
 	target_compile_definitions(coll PRIVATE M_DEBUG)
 endif()
 

@@ -11,7 +11,7 @@ set(PLATFORM_SRC
 add_library(platform STATIC ${PLATFORM_SRC})
 target_include_directories(platform PUBLIC ${SRC_ROOT}/include/platform)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(PLATFORM_DEBUG)
 	target_compile_definitions(platform PRIVATE M_DEBUG)
 endif()
 

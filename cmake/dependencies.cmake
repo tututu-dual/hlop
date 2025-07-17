@@ -1,7 +1,4 @@
 function(setup_dependencies)
-	# GSL
-	find_package(GSL REQUIRED)
-
 	# magic_enum
 	set(MAGIC_ENUM_DIR "${DEPS_ROOT}/magic_enum" CACHE PATH "magic_enum path")
 	if(EXISTS "${MAGIC_ENUM_DIR}/CMakeLists.txt")

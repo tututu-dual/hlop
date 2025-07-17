@@ -10,6 +10,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # dependencies
 set(DEPS_ROOT ${CMAKE_SOURCE_DIR}/deps)
 include(cmake/dependencies.cmake)
+# system dependencies
+find_package(GSL REQUIRED)
+# local dependencies
 setup_dependencies()
 
 # src directory

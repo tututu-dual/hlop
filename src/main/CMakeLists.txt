@@ -7,7 +7,7 @@ set(MAIN_SRC
 add_executable(main ${MAIN_SRC})
 target_include_directories(main PRIVATE ${SRC_ROOT}/include/main)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(MAIN_DEBUG)
 	target_compile_definitions(main PRIVATE M_DEBUG)
 endif()
 

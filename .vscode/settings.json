@@ -1,0 +1,8 @@
+{
+	"cmake.configureArgs": [
+		"-DUTIL_DEBUG=OFF",
+		"-DPLATFORM_DEBUG=OFF",
+		"-DCOLL_DEBUG=OFF",
+		"-DMAIN_DEBUG=OFF",
+	]
+}
