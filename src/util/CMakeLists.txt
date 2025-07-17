@@ -6,7 +6,7 @@ set(UTIL_SRC
 )
 
 add_library(util STATIC ${UTIL_SRC})
-target_include_directories(util PUBLIC ${SRC_DIR}/include/util)
+target_include_directories(util PUBLIC ${SRC_ROOT}/include/util)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(util PRIVATE M_DEBUG)

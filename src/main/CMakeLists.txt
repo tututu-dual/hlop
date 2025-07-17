@@ -5,7 +5,7 @@ set(MAIN_SRC
 )
 
 add_executable(main ${MAIN_SRC})
-target_include_directories(main PRIVATE ${SRC_DIR}/include/main)
+target_include_directories(main PRIVATE ${SRC_ROOT}/include/main)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(main PRIVATE M_DEBUG)

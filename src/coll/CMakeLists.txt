@@ -17,7 +17,7 @@ set(COLL_SRC
 
 add_library(coll STATIC ${COLL_SRC})
 target_include_directories(coll
-	PUBLIC ${SRC_DIR}/include/coll
+	PUBLIC ${SRC_ROOT}/include/coll
 	PUBLIC ${CMAKE_BINARY_DIR}/include
 )
 

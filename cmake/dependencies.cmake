@@ -1,0 +1,24 @@
+function(setup_dependencies)
+	# GSL
+	find_package(GSL REQUIRED)
+
+	# magic_enum
+	set(MAGIC_ENUM_DIR "${DEPS_ROOT}/magic_enum" CACHE PATH "magic_enum path")
+	if(EXISTS "${MAGIC_ENUM_DIR}/CMakeLists.txt")
+		message(STATUS "Found magic_enum: ${MAGIC_ENUM_DIR}")
+		set(MAGIC_ENUM_OPT_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+		set(MAGIC_ENUM_OPT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+		add_subdirectory(${MAGIC_ENUM_DIR} magic_enum)
+	else()
+		message(FATAL_ERROR "magic_enum not found at ${MAGIC_ENUM_DIR}")
+	endif()
+
+	# gflags
+	set(GFLAGS_DIR "${DEPS_ROOT}/gflags" CACHE PATH "gflags path")
+	if(EXISTS "${GFLAGS_DIR}/CMakeLists.txt")
+		message(STATUS "Found gflags: ${GFLAGS_DIR}")
+		add_subdirectory(${GFLAGS_DIR} gflags)
+	else()
+		message(FATAL_ERROR "gflags not found at ${GFLAGS_DIR}")
+	endif()
+endfunction(setup_dependencies)

@@ -4,7 +4,7 @@
 #include <string>
 
 namespace hlop {
-const std::string RESOURCE_BASE = "@RESOURCE_BASE_DIR@/";
+const std::string RESOURCE_BASE = "@RESOURCE_ROOT@/";
 const std::string DF_HLOP_PARAM = "东方超算N-Hop参数.csv";
 const std::string DF_BCAST_SMALL_SCALE = "";
 const std::string TH_HLOP_PARAM = "";

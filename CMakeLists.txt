@@ -1,43 +1,30 @@
 cmake_minimum_required(VERSION 3.12)
 
-# dependencies
-find_package(GSL REQUIRED)
-include(FetchContent)
-FetchContent_Declare(
-	magic_enum
-	GIT_REPOSITORY https://github.com/Neargye/magic_enum.git
-    GIT_TAG        master
-)
-set(MAGIC_ENUM_OPT_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(MAGIC_ENUM_OPT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(magic_enum)
-FetchContent_Declare(
-	gflags
-	GIT_REPOSITORY https://github.com/gflags/gflags.git
-    GIT_TAG        master
-)
-FetchContent_MakeAvailable(gflags)
-
 project(H-Lop VERSION 0.1)
-
-# output directory
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-
-# src directory
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 
 # compile flags
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# dependencies
+set(DEPS_ROOT ${CMAKE_SOURCE_DIR}/deps)
+include(cmake/dependencies.cmake)
+setup_dependencies()
+
+# src directory
+set(SRC_ROOT ${CMAKE_SOURCE_DIR}/src)
+
+# output directory
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
 # resource file configure
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-	set(RESOURCE_BASE_DIR "${CMAKE_INSTALL_PREFIX}/share/resources/")
+	set(RESOURCE_ROOT "${CMAKE_INSTALL_PREFIX}/share/resources/")
 else()
-	set(RESOURCE_BASE_DIR "${CMAKE_SOURCE_DIR}/resources")
+	set(RESOURCE_ROOT "${CMAKE_SOURCE_DIR}/resources")
 endif()
 configure_file(
 	cmake/configs/resources.h.in
