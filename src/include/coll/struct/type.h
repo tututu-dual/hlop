@@ -69,15 +69,15 @@ std::ostream &operator<<(std::ostream &os, const hlop::algo_type &algo);
  * - PLANE
  * - ARBITRARY
  */
-enum class rank_arrange {
+enum class rank_arrangement {
 	BLOCK,
 	CYCLIC,
 	PLANE,
 	ARBITRARY
 };
-typedef rank_arrange rank_arrange_t;
+typedef rank_arrangement rank_arrangement_t;
 
-std::ostream &operator<<(std::ostream &os, const hlop::rank_arrange &ra);
+std::ostream &operator<<(std::ostream &os, const hlop::rank_arrangement &ra);
 } // namespace hlop
 
 #endif // __TYPES_H__

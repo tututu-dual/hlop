@@ -13,7 +13,7 @@ std::ostream &hlop::operator<<(std::ostream &os, const hlop::algo_type &algo) {
 	return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const hlop::rank_arrange &ra) {
+std::ostream &operator<<(std::ostream &os, const hlop::rank_arrangement &ra) {
 	os << hlop::enum_name(ra);
 	return os;
 }

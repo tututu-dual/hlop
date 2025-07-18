@@ -1,12 +1,12 @@
 {
 	"cmake.configureArgs": [
-		"-DUTIL_INFO=ON",
+		"-DUTIL_INFO=OFF",
 		"-DUTIL_DEBUG=OFF",
-		"-DPLATFORM_INFO=ON",
+		"-DPLATFORM_INFO=OFF",
 		"-DPLATFORM_DEBUG=OFF",
-		"-DCOLL_INFO=ON",
+		"-DCOLL_INFO=OFF",
 		"-DCOLL_DEBUG=OFF",
-		"-DMAIN_INFO=ON",
+		"-DMAIN_INFO=OFF",
 		"-DMAIN_DEBUG=OFF",
 	]
 }

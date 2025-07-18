@@ -46,10 +46,10 @@ public:
 	 * @param node_list_str string, a string representation of the node list.
 	 * @param ppn int, the number of processes per node.
 	 * @param ranks vector<int>, a vector of process ranks in this node list.
-	 * @param rule rank_arrange, the rank arrangement rule to use.
+	 * @param rule rank_arrangement, the rank arrangement rule to use.
 	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
 	 */
-	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::rank_arrange_t rule);
+	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::rank_arrangement_t rule);
 	~node_list() = default;
 
 public:
@@ -157,7 +157,7 @@ private:
 	const int numa_cores;
 	const int max_network_level;
 	const std::regex node_regex;
-	const std::unordered_map<hlop::rank_arrange, std::function<int(int)>> rank_arrange_map;
+	const std::unordered_map<hlop::rank_arrangement, std::function<int(int)>> rank_arrangement_map;
 };
 typedef node_list node_list_t;
 

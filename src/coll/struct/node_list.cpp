@@ -20,14 +20,14 @@ hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str
       node_regex(hlop::node_parser::get_node_regex(pf)),
       nlist(hlop::node_parser::parser_node_list(pf, node_list_str)),
       nproc_per_node(ppn),
-      rank_arrange_map(
-          {{hlop::rank_arrange::BLOCK, [this](int rank) -> int { return rank / nproc_per_node; }},
-           {hlop::rank_arrange::CYCLIC, [this](int rank) -> int { return rank % nlist.size(); }},
-           {hlop::rank_arrange::PLANE, [this](int rank) -> int {
+      rank_arrangement_map(
+          {{hlop::rank_arrangement::BLOCK, [this](int rank) -> int { return rank / nproc_per_node; }},
+           {hlop::rank_arrangement::CYCLIC, [this](int rank) -> int { return rank % nlist.size(); }},
+           {hlop::rank_arrangement::PLANE, [this](int rank) -> int {
 	            HLOP_ERR("plane rank arrangement is not implemented yet");
 	            return -1; // unreachable
             }},
-           {hlop::rank_arrange::ARBITRARY, [this](int rank) -> int {
+           {hlop::rank_arrangement::ARBITRARY, [this](int rank) -> int {
 	            HLOP_ERR("arbitrary rank arrangement is not implemented yet");
 	            return -1; // unreachable
             }}}) {
@@ -50,10 +50,10 @@ hlop::node_list::node_list(hlop::platform_t pf,
 hlop::node_list::node_list(hlop::platform_t pf,
                            const std::string &node_list_str,
                            int ppn,
-                           hlop::rank_arrange_t rule)
+                           hlop::rank_arrangement_t rule)
     : node_list(pf, node_list_str, ppn) {
 	for (int i = 0; i < ppn * nlist.size(); ++i)
-		rmap.emplace(i, nlist.at(rank_arrange_map.at(rule)(i)));
+		rmap.emplace(i, nlist.at(rank_arrangement_map.at(rule)(i)));
 }
 
 const int hlop::node_list::get_node_cores() const { return node_cores; }

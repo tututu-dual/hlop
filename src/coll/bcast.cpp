@@ -55,7 +55,6 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl,
 			double tmp_cost;
 			int nc = c.second;
 			const auto &cp = c.first;
-			INFO("{}, contention: {}", cp, nc);
 			if (cp.is_intra_pair())
 				tmp_cost = df_hlop_param.get_param(msg_size,
 				                                   "L0",
@@ -68,6 +67,7 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl,
 				                                   "PING",
 				                                   std::to_string(nc));
 			max_cost = std::max(tmp_cost, max_cost);
+			INFO("{}, contention: {}; cost: {}", cp, nc, tmp_cost);
 		}
 		// next loop
 		mask >>= 1;
