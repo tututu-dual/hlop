@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# [ -d build ] && rm -rf build
-# [ -d bin ] && rm -rf bin
-# [ -d lib ] && rm -rf lib
-# [ -d ../install ] && rm -rf ../install
-# mkdir -p build bin lib ../install
+install_dir="${HOME}/tmp/install"
 
-(cd build; make clean;)
+[ -d ${install_dir} ] && rm -rf ${install_dir}
+[ -d build ] && rm -rf build
+[ -d bin ] && rm -rf bin
+[ -d lib ] && rm -rf lib
+mkdir -p ${install_dir} build bin lib
 
 cmake -DCMAKE_C_COMPILER=clang \
 	  -DCMAKE_CXX_COMPILER=clang++ \
 	  -DCMAKE_BUILD_TYPE=Release \
-	  -DCMAKE_INSTALL_PREFIX=$(pwd)/../install \
+	  -DCMAKE_INSTALL_PREFIX=${install_dir} \
 	  -B build \
 	  -S .
 

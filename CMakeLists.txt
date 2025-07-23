@@ -30,8 +30,9 @@ else()
 	set(RESOURCE_ROOT "${CMAKE_SOURCE_DIR}/resources")
 endif()
 configure_file(
-	cmake/configs/resources.h.in
+	${CMAKE_SOURCE_DIR}/cmake/template/resources.h.in
 	${CMAKE_BINARY_DIR}/include/resources.h
+	@ONLY
 )
 
 # compile
@@ -82,8 +83,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 			WORLD_READ
 	)
 	configure_file(
-		"${CMAKE_SOURCE_DIR}/cmake/uninstall.cmake.in"
-		"${CMAKE_BINARY_DIR}/uninstall.cmake"
+		${CMAKE_SOURCE_DIR}/cmake/template/uninstall.cmake.in
+		${CMAKE_BINARY_DIR}/uninstall.cmake
 		@ONLY
 	)
 	add_custom_target(uninstall

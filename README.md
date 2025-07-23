@@ -1,31 +1,4 @@
-# hlop (version 0.1)
-
-## util
-some utilities functions.
-- `fit`: function fit.
-- `aux`: some check function, like pof2.
-
-## platform
-some platform features.
-- `node/`: platform node infomation.
-- `param/`: parameter infomation.
-- `platform`: platform infomation.
-
-## coll
-collective operations & structs.
-- `struct/`: structs describe platform, collective operation & algorithm, etc.
-- `${operation}`: collective operation implementment.
-
-## main
-command line interface.
-- `main`: command line parser & execute.
-
-## dependencies
-- GSL: install by pacman, yum, apt, etc.
-- gflags: install manually.
-
-
-# hlop (version 0.2)
+# hlop (version 1.0)
 
 ##  directory struct
 ```

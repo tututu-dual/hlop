@@ -19,3 +19,19 @@ if(PLATFORM_DEBUG)
 endif()
 
 target_link_libraries(platform PUBLIC util)
+
+# test latency
+# set(LATENCY_SRC
+# 	latency/multi_lat.cpp
+# )
+
+# add_executable(hlop_multi_lat ${LATENCY_SRC})
+
+# if(PLATFORM_INFO)
+# 	target_compile_definitions(hlop_multi_lat PRIVATE M_DEBUG)
+# endif()
+# if(PLATFORM_DEBUG)
+# 	target_compile_definitions(hlop_multi_lat PRIVATE M_DEBUG_VERBOSE)
+# endif()
+
+# target_link_libraries(hlop_multi_lat mpi)

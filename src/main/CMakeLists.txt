@@ -4,14 +4,14 @@ set(MAIN_SRC
 	main.cpp
 )
 
-add_executable(main ${MAIN_SRC})
-target_include_directories(main PRIVATE ${SRC_ROOT}/include/main)
+add_executable(hlop ${MAIN_SRC})
+target_include_directories(hlop PRIVATE ${SRC_ROOT}/include/main)
 
 if(MAIN_INFO)
-	target_compile_definitions(main PRIVATE M_DEBUG)
+	target_compile_definitions(hlop PRIVATE M_DEBUG)
 endif()
 if(MAIN_DEBUG)
-	target_compile_definitions(main PRIVATE M_DEBUG_VERBOSE)
+	target_compile_definitions(hlop PRIVATE M_DEBUG_VERBOSE)
 endif()
 
-target_link_libraries(main PRIVATE gflags PRIVATE coll)
+target_link_libraries(hlop PRIVATE gflags PRIVATE coll)
