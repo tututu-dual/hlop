@@ -16,7 +16,9 @@ hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str
     : platform(pf),
       node_cores(hlop::node_parser::get_node_cores(pf)),
       numa_cores(hlop::node_parser::get_numa_cores(pf)),
+      ncore_per_numa(hlop::node_parser::get_ncore_per_numa(pf)),
       max_network_level(hlop::node_parser::get_max_network_level(pf)),
+      max_core_level(hlop::node_parser::get_max_core_level(pf)),
       node_regex(hlop::node_parser::get_node_regex(pf)),
       nlist(hlop::node_parser::parser_node_list(pf, node_list_str)),
       nproc_per_node(ppn),
@@ -58,9 +60,11 @@ hlop::node_list::node_list(hlop::platform_t pf,
 
 const int hlop::node_list::get_node_cores() const { return node_cores; }
 
-const int hlop::node_list::get_numa_cores() const { return numa_cores; }
+const int hlop::node_list::get_ncore_per_numa() const { return ncore_per_numa; }
 
 const int hlop::node_list::get_max_network_level() const { return max_network_level; }
+
+const int hlop::node_list::get_max_core_level() const { return max_core_level; }
 
 const int hlop::node_list::get_node_num() const { return nlist.size(); }
 
@@ -76,7 +80,24 @@ const int hlop::node_list::get_rank_num() const { return rmap.size(); }
 
 const hlop::platform_t hlop::node_list::get_platform() const { return platform; }
 
-const int hlop::node_list::get_level(const std::string &node1, const std::string &node2) const {
+const int hlop::node_list::get_intra_level(int rank1, int rank2) const {
+	if (rank1 < 0 || rank1 >= get_rank_num())
+		HLOP_ERR(hlop::format("rank1(={}) not in range [0, {}]", rank1, get_rank_num() - 1));
+	if (rank2 < 0 || rank2 >= get_rank_num())
+		HLOP_ERR(hlop::format("rank2(={}) not in range [0, {}]", rank2, get_rank_num() - 1));
+
+	if (rank1 / 4 == rank2 / 4) // same half numa
+		return 0;
+	else if (rank1 / 8 == rank2 / 8) // same numa
+		return 1;
+	return 2; // same node
+}
+
+const int hlop::node_list::get_intra_level(const hlop::comm_pair_t &cp) const {
+	return get_intra_level(cp.get_src_rank(), cp.get_dst_rank());
+}
+
+const int hlop::node_list::get_inter_level(const std::string &node1, const std::string &node2) const {
 	if (!has_node(node1))
 		HLOP_ERR(hlop::format("node {} not in this list", node1));
 	if (!has_node(node2))
@@ -95,8 +116,8 @@ const int hlop::node_list::get_level(const std::string &node1, const std::string
 	return -1; // unreachable
 }
 
-const int hlop::node_list::get_level(const hlop::comm_pair_t &cp) const {
-	return get_level(cp.get_src_node(), cp.get_dst_node());
+const int hlop::node_list::get_inter_level(const hlop::comm_pair_t &cp) const {
+	return get_inter_level(cp.get_src_node(), cp.get_dst_node());
 }
 
 const std::string &hlop::node_list::get_node_id_by_rank(int rank) const {

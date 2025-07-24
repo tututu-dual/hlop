@@ -1,3 +1,4 @@
+#include <string>
 #include <vector>
 
 #include "bcast.h"
@@ -49,29 +50,24 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl,
 			}
 		}
 		// get contention and calculate cost
-		double max_cost = 0;
-		const auto contention = get_contentions(p);
-		for (const auto &c : contention) {
-			double tmp_cost;
-			int nc = c.second;
-			const auto &cp = c.first;
-			if (cp.is_intra_pair())
-				tmp_cost = df_hlop_param.get_param(msg_size,
-				                                   "L0",
-				                                   "PING",
-				                                   std::to_string(nc));
-			else
-				tmp_cost = df_hlop_param.get_param(msg_size,
-				                                   "L1",
-				                                   std::to_string(nl.get_level(cp)),
-				                                   "PING",
-				                                   std::to_string(nc));
-			max_cost = std::max(tmp_cost, max_cost);
-			INFO("{}, contention: {}; cost: {}", cp, nc, tmp_cost);
-		}
+		// double max_cost = 0;
+		// const auto contention = get_contentions(p);
+		// for (const auto &c : contention) {
+		// 	double tmp_cost;
+		// 	int nc = c.second;
+		// 	const auto &cp = c.first;
+		// 	if (cp.is_intra_pair())
+		// 		tmp_cost = df_hlop_param_lat.get_param(msg_size, "L0", std::to_string(nl.get_intra_level(cp)),
+		// 		                                       std::to_string(nc));
+		// 	else
+		// 		tmp_cost = df_hlop_param_lat.get_param(msg_size, "L1", std::to_string(nl.get_inter_level(cp)),
+		// 		                                       std::to_string(nc));
+		// 	max_cost = std::max(tmp_cost, max_cost);
+		// 	INFO("{}, contention: {}; cost: {}", cp, nc, tmp_cost);
+		// }
+		cost += calc_cost(nl, p, msg_size);
 		// next loop
 		mask >>= 1;
-		cost += max_cost;
 	}
 	return cost;
 }

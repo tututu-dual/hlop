@@ -56,14 +56,26 @@ public:
 	 * @return double, the predicted performance of the algorithm.
 	 */
 	virtual const double predict(hlop::algo_type algo, const hlop::node_list_t &nl, int msg_size, const hlop::algo_diff_param_t &dp) const;
+
+protected:
 	/**
+	 * @fixme
 	 * @brief get the contention in a set of communication pairs.
 	 * @param pairs vector<comm_pair>, the communication pairs to check for contention.
 	 * @return map<comm_pair, int>, a map of communication pairs to contention counts.
 	 */
 	virtual const std::map<hlop::comm_pair, int> get_contentions(const std::vector<hlop::comm_pair> &pairs) const;
 
-protected:
+	/**
+	 * @brief calculate the cost of this communication round.
+	 * @param nl node_list, where communication happens.
+	 * @param pairs vector<comm_pair>, the communication pairs involved in this round.
+	 * @param msg_size int, the size of the message being communicated.
+	 * @return double, the cost of this communication round.
+	 */
+	virtual const double calc_cost(const hlop::node_list_t &nl,
+	                               const std::vector<hlop::comm_pair> &pairs,
+	                               int msg_size) const;
 	/**
 	 * @brief initialize the function table with predictor handlers.
 	 * @return void.
@@ -80,7 +92,8 @@ protected:
 	std::optional<const hlop::param> other_param;
 
 protected:
-	static const hlop::param_t df_hlop_param;
+	static const hlop::param_t df_hlop_param_lat;
+	static const hlop::param_t df_hlop_param_bw;
 };
 } // namespace hlop
 

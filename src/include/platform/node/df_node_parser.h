@@ -16,7 +16,9 @@ class df_node_parser {
 public:
 	static constexpr int NODE_CORES{30};
 	static constexpr int NUMA_CORES{4};
+	static constexpr int NCORE_PER_NUMA{8};
 	static constexpr int MAX_NETWORK_LEVEL{3};
+	static constexpr int MAX_CORE_LEVEL{3};
 	static const std::regex NODE_REGEX;
 	static const std::regex NODE_LIST_REGEX;
 

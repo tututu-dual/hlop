@@ -35,10 +35,36 @@ const int hlop::node_parser::get_numa_cores(hlop::platform_t pf) {
 	}
 }
 
+const int hlop::node_parser::get_ncore_per_numa(hlop::platform_t pf) {
+	switch (pf) {
+	case hlop::platform::DF:
+		return hlop::df_node_parser::NCORE_PER_NUMA;
+	case hlop::platform::TH:
+		HLOP_ERR("TH platform is not implemented yet");
+		return -1; // unreachable
+	default:
+		HLOP_ERR("unknown platform type");
+		return -1; // unreachable
+	}
+}
+
 const int hlop::node_parser::get_max_network_level(hlop::platform_t pf) {
 	switch (pf) {
 	case hlop::platform::DF:
 		return hlop::df_node_parser::MAX_NETWORK_LEVEL;
+	case hlop::platform::TH:
+		HLOP_ERR("TH platform is not implemented yet");
+		return -1; // unreachable
+	default:
+		HLOP_ERR("unknown platform type");
+		return -1; // unreachable
+	}
+}
+
+const int hlop::node_parser::get_max_core_level(hlop::platform_t pf) {
+	switch (pf) {
+	case hlop::platform::DF:
+		return hlop::df_node_parser::MAX_CORE_LEVEL;
 	case hlop::platform::TH:
 		HLOP_ERR("TH platform is not implemented yet");
 		return -1; // unreachable

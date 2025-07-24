@@ -58,6 +58,10 @@ bool hlop::comm_pair::is_intra_pair() const { return src_pnr.first == dst_pnr.fi
 
 bool hlop::comm_pair::is_inter_pair() const { return !is_intra_pair(); }
 
+int hlop::comm_pair::get_src_rank() const { return src_pnr.second; }
+
+int hlop::comm_pair::get_dst_rank() const { return dst_pnr.second; }
+
 const std::string &hlop::comm_pair::get_src_node() const { return src_pnr.first; }
 
 const std::string &hlop::comm_pair::get_dst_node() const { return dst_pnr.first; }

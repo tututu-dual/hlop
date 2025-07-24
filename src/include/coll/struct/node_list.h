@@ -62,12 +62,17 @@ public:
 	 * @brief get the number of numa cores in a node.
 	 * @return int, the number of numa cores in a node.
 	 */
-	const int get_numa_cores() const;
+	const int get_ncore_per_numa() const;
 	/**
 	 * @brief get the max network level in this system.
 	 * @return int, the max network level in this system.
 	 */
 	const int get_max_network_level() const;
+	/**
+	 * @brief get the max core level in this system.
+	 * @return int, the max core level in this system.
+	 */
+	const int get_max_core_level() const;
 	/**
 	 * @brief get the number of node in this list.
 	 * @return int, the number of nodes in this list.
@@ -100,19 +105,33 @@ public:
 	 */
 	const hlop::platform_t get_platform() const;
 	/**
+	 * @brief get core level between core1 and core2.
+	 * @param rank1 int, rank bind to core1.
+	 * @param rank2 int, rank bind to core2.
+	 * @return int, the core level between core1 and core2.
+	 * @throws hlop_err, if rank1 or rank2 is not in this list, or the range greater than max core level.
+	 */
+	const int get_intra_level(int rank1, int rank2) const;
+	/**
+	 * @brief get core level between node in this communication pair.
+	 * @param cp comm_pair, communication pair.
+	 * @return int, the core level between cores in the communication pair.
+	 */
+	const int get_intra_level(const hlop::comm_pair_t &cp) const;
+	/**
 	 * @brief get net level between node1 and node2.
 	 * @param node1 string, name of the first node.
 	 * @param node2 string, name of the second node.
 	 * @return int, the network level between node1 and node2.
 	 * @throws hlop_err, if node1 or node2 is not in this list, or the range greater than max network level.
 	 */
-	const int get_level(const std::string &node1, const std::string &node2) const;
+	const int get_inter_level(const std::string &node1, const std::string &node2) const;
 	/**
 	 * @brief get net level between node in this communication pair.
 	 * @param cp comm_pair, communication pair.
 	 * @return int, the network level between nodes in the communication pair.
 	 */
-	const int get_level(const hlop::comm_pair_t &cp) const;
+	const int get_inter_level(const hlop::comm_pair_t &cp) const;
 	/**
 	 * @brief get node name by process rank.
 	 * @param rank int, process rank.
@@ -155,7 +174,9 @@ private:
 	const hlop::platform_t platform;
 	const int node_cores;
 	const int numa_cores;
+	const int ncore_per_numa;
 	const int max_network_level;
+	const int max_core_level;
 	const std::regex node_regex;
 	const std::unordered_map<hlop::rank_arrangement, std::function<int(int)>> rank_arrangement_map;
 };

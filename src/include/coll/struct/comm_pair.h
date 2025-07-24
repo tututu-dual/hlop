@@ -84,6 +84,16 @@ public:
 	 */
 	bool is_inter_pair() const;
 	/**
+	 * @brief get the source process rank in the pair.
+	 * @return int, the source process rank.
+	 */
+	int get_src_rank() const;
+	/**
+	 * @brief get the destination process rank in the pair.
+	 * @return int, the destination process rank.
+	 */
+	int get_dst_rank() const;
+	/**
 	 * @brief get the source node in the pair.
 	 * @return string, the source node name.
 	 */

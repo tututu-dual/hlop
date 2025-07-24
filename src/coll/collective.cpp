@@ -7,12 +7,14 @@
 
 #include "collective.h"
 #include "err.h"
+#include "m_debug.h"
 #include "msg.h"
 #include "param/param.h"
 #include "resources.h"
 #include "struct/comm_pair.h"
 
-const hlop::param_t hlop::collective::df_hlop_param{hlop::RESOURCE_BASE + hlop::DF_HLOP_PARAM};
+const hlop::param_t hlop::collective::df_hlop_param_lat{hlop::RESOURCE_BASE + hlop::DF_HLOP_PARAM_LAT};
+const hlop::param_t hlop::collective::df_hlop_param_bw{hlop::RESOURCE_BASE + hlop::DF_HLOP_PARAM_BW};
 
 hlop::collective::collective()
     : small_scales_param{std::nullopt}, other_param{std::nullopt} {}
@@ -49,4 +51,25 @@ const std::map<hlop::comm_pair, int> hlop::collective::get_contentions(const std
 		res[p] = res.find(p) == res.end() ? 1 : res[p] + 1;
 
 	return std::move(res);
+}
+
+const double hlop::collective::calc_cost(const hlop::node_list_t &nl,
+                                         const std::vector<hlop::comm_pair> &pairs,
+                                         int msg_size) const {
+	double max_cost = 0.0;
+	const auto contention = get_contentions(pairs);
+	for (const auto &c : contention) {
+		double tmp_cost;
+		int nc = c.second;
+		const auto &cp = c.first;
+		if (cp.is_intra_pair())
+			tmp_cost = df_hlop_param_lat.get_param(msg_size, "L0", std::to_string(nl.get_intra_level(cp)),
+			                                       std::to_string(nc));
+		else
+			tmp_cost = df_hlop_param_lat.get_param(msg_size, "L1", std::to_string(nl.get_inter_level(cp)),
+			                                       std::to_string(nc));
+		max_cost = std::max(tmp_cost, max_cost);
+		INFO("{}, contention: {}; cost: {}", cp, nc, tmp_cost);
+	}
+	return max_cost;
 }

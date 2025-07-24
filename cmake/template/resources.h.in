@@ -5,9 +5,9 @@
 
 namespace hlop {
 const std::string RESOURCE_BASE = "@RESOURCE_ROOT@/";
-const std::string DF_HLOP_PARAM = "东方超算N-Hop参数.csv";
-const std::string DF_BCAST_SMALL_SCALE = "";
-const std::string TH_HLOP_PARAM = "";
-}  // namespace hlop
+const std::string DF_HLOP_PARAM_LAT = "param_lat_all.csv";
+const std::string DF_HLOP_PARAM_BW = "param_bw_all.csv";
+const std::string TH_HLOP_PARAM_LAT = "";
+} // namespace hlop
 
-#endif  // __RESOURCES_H__
+#endif // __RESOURCES_H__
