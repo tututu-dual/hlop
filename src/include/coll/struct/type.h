@@ -2,7 +2,6 @@
 #define __TYPES_H__
 
 #include <iostream>
-#include <ostream>
 
 namespace hlop {
 /**

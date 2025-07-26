@@ -33,6 +33,7 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl,
 	while (mask > 0) {
 		INFO("mask = {}", mask);
 		// generate communication pairs
+		DEBUG("communication pairs: ");
 		std::vector<hlop::comm_pair> p;
 		for (int rank = 0; rank < comm_size; ++rank) {
 			int relative_rank = (rank >= root) ? (rank - root) : (rank - root + comm_size);

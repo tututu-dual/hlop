@@ -1,27 +1,13 @@
 #include <iostream>
-#include <string>
-#include <string_view>
-#include <utility>
 
+#include "node/node.h"
 #include "struct/comm_pair.h"
 
-hlop::comm_pair::comm_pair(const hlop::comm_pair::pnr &src, const hlop::comm_pair::pnr &dst)
-    : src_pnr{src}, dst_pnr{dst}, sendrecv{nullptr} {
-	if (src_pnr.first > dst_pnr.first)
-		std::swap(src_pnr, dst_pnr);
-}
+hlop::comm_pair::comm_pair(const hlop::node_t &src_node, int src_rank, const hlop::node_t &dst_node, int dst_rank)
+    : src_pnr{&src_node, src_rank}, dst_pnr{&dst_node, dst_rank}, sendrecv(nullptr) {}
 
-hlop::comm_pair::comm_pair(const std::string &src_node, int src_rank, const std::string &dst_node, int dst_rank)
-    : src_pnr{src_node, src_rank}, dst_pnr{dst_node, dst_rank} {
-	if (src_pnr.first > dst_pnr.first)
-		std::swap(src_pnr, dst_pnr);
-}
-
-hlop::comm_pair::comm_pair(const hlop::comm_pair::pnr &self, hlop::comm_pair::comm_pair_ptr sr) : src_pnr{self}, dst_pnr{self}, sendrecv{sr} {}
-
-hlop::comm_pair::comm_pair(const std::string &self_node, int self_rank, hlop::comm_pair::comm_pair_ptr sr)
-    : src_pnr{self_node, self_rank}, dst_pnr{self_node, self_rank}, sendrecv{sr} {
-}
+hlop::comm_pair::comm_pair(const hlop::node_t &self_node, int self_rank, hlop::comm_pair::comm_pair_ptr sr)
+    : src_pnr{&self_node, self_rank}, dst_pnr{&self_node, self_rank}, sendrecv{sr} {}
 
 hlop::comm_pair::comm_pair(const hlop::comm_pair &other)
     : src_pnr{other.src_pnr}, dst_pnr{other.dst_pnr}, sendrecv{other.sendrecv} {}
@@ -41,36 +27,89 @@ hlop::comm_pair &hlop::comm_pair::operator=(hlop::comm_pair &&other) noexcept {
 }
 
 bool hlop::comm_pair::operator==(const hlop::comm_pair &other) const {
-	if (!is_mid_pair() && !other.is_mid_pair())
-		return (get_src_node() == other.get_src_node() &&
-		        get_dst_node() == other.get_dst_node());
-	else if (is_mid_pair() && other.is_mid_pair())
-		return (get_src_node() == other.get_src_node() &&
-		        get_dst_node() == other.get_dst_node() &&
-		        *sendrecv == *other.sendrecv);
-	else
-		return false;
+	const auto &this_src_node = get_src_node();
+	const auto &this_dst_node = get_dst_node();
+	const auto &other_src_node = other.get_src_node();
+	const auto &other_dst_node = other.get_dst_node();
+
+	if (is_mid_node_pair() && other.is_mid_node_pair()) {
+		return (this_src_node == other_src_node) &&
+		       (this_src_node.get_unit_id(get_src_rank()) ==
+		        other_src_node.get_unit_id(other.get_src_rank())) &&
+		       (*sendrecv == *other.sendrecv);
+	}
+
+	if (!is_mid_node_pair() && !other.is_mid_node_pair()) {
+		if (is_intra_node_pair() && other.is_intra_node_pair()) {
+			if (this_src_node != other_src_node) {
+				return false;
+			}
+
+			const auto &this_node = get_src_node();
+			const auto &other_node = other.get_src_node();
+
+			if (is_intra_unit_pair() && other.is_intra_unit_pair()) {
+				return this_node.get_unit_id(get_src_rank()) ==
+				       other_node.get_unit_id(other.get_src_rank());
+			}
+
+			if (is_inter_unit_pair() && other.is_inter_unit_pair()) {
+				return ((this_node.get_unit_id(get_src_rank()) ==
+				         other_node.get_unit_id(other.get_src_rank())) ||
+				        (this_node.get_unit_id(get_src_rank()) ==
+				         other_node.get_unit_id(other.get_dst_rank()))) &&
+				       ((this_node.get_unit_id(get_dst_rank()) ==
+				         other_node.get_unit_id(other.get_dst_rank())) ||
+				        (this_node.get_unit_id(get_dst_rank()) ==
+				         other_node.get_unit_id(other.get_src_rank())));
+			}
+		}
+
+		if (is_inter_node_pair() && other.is_inter_node_pair()) {
+			return ((this_src_node == other_src_node) ||
+			        (this_src_node == other_dst_node)) &&
+			       ((this_dst_node == other_dst_node) ||
+			        (this_dst_node == other_src_node));
+		}
+	}
+
+	return false;
 }
 
-bool hlop::comm_pair::is_mid_pair() const { return sendrecv != nullptr; }
+bool hlop::comm_pair::operator!=(const hlop::comm_pair &other) const {
+	return !this->operator==(other);
+}
 
-bool hlop::comm_pair::is_intra_pair() const { return src_pnr.first == dst_pnr.first; }
+bool hlop::comm_pair::operator<(const hlop::comm_pair &other) const {
+	return (get_src_node() < other.get_src_node() ||
+	        (get_src_node() == other.get_src_node() &&
+	         get_dst_node() < other.get_dst_node()));
+}
 
-bool hlop::comm_pair::is_inter_pair() const { return !is_intra_pair(); }
+bool hlop::comm_pair::operator>(const hlop::comm_pair &other) const {
+	return !this->operator<(other) && !this->operator==(other);
+}
+
+bool hlop::comm_pair::is_mid_node_pair() const { return sendrecv != nullptr; }
+
+bool hlop::comm_pair::is_intra_node_pair() const { return get_src_node() == get_dst_node(); }
+
+bool hlop::comm_pair::is_inter_node_pair() const { return !is_intra_node_pair(); }
+
+bool hlop::comm_pair::is_intra_unit_pair() const {
+	return get_src_node().get_unit_id(get_src_rank()) ==
+	       get_dst_node().get_unit_id(get_dst_rank());
+}
+
+bool hlop::comm_pair::is_inter_unit_pair() const { return !is_intra_unit_pair(); }
+
+const hlop::node_t &hlop::comm_pair::get_src_node() const { return *src_pnr.first; }
+
+const hlop::node_t &hlop::comm_pair::get_dst_node() const { return *dst_pnr.first; }
 
 int hlop::comm_pair::get_src_rank() const { return src_pnr.second; }
 
 int hlop::comm_pair::get_dst_rank() const { return dst_pnr.second; }
-
-const std::string &hlop::comm_pair::get_src_node() const { return src_pnr.first; }
-
-const std::string &hlop::comm_pair::get_dst_node() const { return dst_pnr.first; }
-
-bool hlop::operator<(const hlop::comm_pair &lhs, const hlop::comm_pair &rhs) {
-	return (lhs.get_src_node() < rhs.get_src_node() ||
-	        (lhs.get_src_node() == rhs.get_src_node() &&
-	         lhs.get_dst_node() < rhs.get_dst_node()));
-}
 
 std::ostream &hlop::operator<<(std::ostream &os, const hlop::comm_pair &self) {
 	if (self.sendrecv == nullptr)

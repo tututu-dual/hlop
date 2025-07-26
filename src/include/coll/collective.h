@@ -41,12 +41,12 @@ public:
 	 * @param algo algo_type, the algorithm type to check.
 	 * @return bool, true if the algorithm is implemented, false otherwise.
 	 */
-	virtual bool has_algo(hlop::algo_type algo) const;
+	bool has_algo(hlop::algo_type algo) const;
 	/**
 	 * @brief get the list of available algorithms.
 	 * @return vector<algo_type>, the list of available algorithms.
 	 */
-	virtual const std::vector<hlop::algo_type> get_algos() const;
+	const std::vector<hlop::algo_type> get_algos() const;
 	/**
 	 * @brief predict the performance of an algorithm.
 	 * @param algo algo_type, the algorithm type to predict.
@@ -55,7 +55,7 @@ public:
 	 * @param dp algo_diff_param_t, the algorithm-specific parameters.
 	 * @return double, the predicted performance of the algorithm.
 	 */
-	virtual const double predict(hlop::algo_type algo, const hlop::node_list_t &nl, int msg_size, const hlop::algo_diff_param_t &dp) const;
+	const double predict(hlop::algo_type algo, const hlop::node_list_t &nl, int msg_size, const hlop::algo_diff_param_t &dp) const;
 
 protected:
 	/**
@@ -64,7 +64,7 @@ protected:
 	 * @param pairs vector<comm_pair>, the communication pairs to check for contention.
 	 * @return map<comm_pair, int>, a map of communication pairs to contention counts.
 	 */
-	virtual const std::map<hlop::comm_pair, int> get_contentions(const std::vector<hlop::comm_pair> &pairs) const;
+	const std::map<hlop::comm_pair, int> get_contentions(const std::vector<hlop::comm_pair> &pairs) const;
 
 	/**
 	 * @brief calculate the cost of this communication round.
@@ -92,8 +92,8 @@ protected:
 	std::optional<const hlop::param> other_param;
 
 protected:
-	static const hlop::param_t df_hlop_param_lat;
-	static const hlop::param_t df_hlop_param_bw;
+	static const hlop::param_t hlop_param_lat;
+	static const hlop::param_t hlop_param_bw;
 };
 } // namespace hlop
 

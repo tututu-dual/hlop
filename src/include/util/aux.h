@@ -4,7 +4,6 @@
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <utility>
 #include <vector>
 
 #include "err.h"
@@ -67,7 +66,7 @@ const std::vector<T> stov(const std::string &l, int skip = 0) {
 			HLOP_ERR(hlop::format("cannot convert '{}' to target type", item));
 		res.push_back(value);
 	}
-	return std::move(res);
+	return res;
 }
 
 /**

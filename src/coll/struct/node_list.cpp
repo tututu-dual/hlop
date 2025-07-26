@@ -3,22 +3,20 @@
 #include <regex>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #include "aux.h"
 #include "err.h"
 #include "msg.h"
+#include "node/df_node.h"
 #include "platform.h"
+#include "struct/comm_pair.h"
 #include "struct/node_list.h"
 #include "struct/type.h"
 
 hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn)
     : platform(pf),
-      node_cores(hlop::node_parser::get_node_cores(pf)),
-      numa_cores(hlop::node_parser::get_numa_cores(pf)),
-      ncore_per_numa(hlop::node_parser::get_ncore_per_numa(pf)),
-      max_network_level(hlop::node_parser::get_max_network_level(pf)),
-      max_core_level(hlop::node_parser::get_max_core_level(pf)),
       node_regex(hlop::node_parser::get_node_regex(pf)),
       nlist(hlop::node_parser::parser_node_list(pf, node_list_str)),
       nproc_per_node(ppn),
@@ -33,8 +31,8 @@ hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str
 	            HLOP_ERR("arbitrary rank arrangement is not implemented yet");
 	            return -1; // unreachable
             }}}) {
-	if (ppn > node_cores)
-		HLOP_ERR(hlop::format("number of process per node(={}) must less equal to {}", ppn, node_cores));
+	// if (ppn > node_cores)
+	// 	HLOP_ERR(hlop::format("number of process per node(={}) must less equal to {}", ppn, node_cores));
 }
 
 hlop::node_list::node_list(hlop::platform_t pf,
@@ -57,14 +55,6 @@ hlop::node_list::node_list(hlop::platform_t pf,
 	for (int i = 0; i < ppn * nlist.size(); ++i)
 		rmap.emplace(i, nlist.at(rank_arrangement_map.at(rule)(i)));
 }
-
-const int hlop::node_list::get_node_cores() const { return node_cores; }
-
-const int hlop::node_list::get_ncore_per_numa() const { return ncore_per_numa; }
-
-const int hlop::node_list::get_max_network_level() const { return max_network_level; }
-
-const int hlop::node_list::get_max_core_level() const { return max_core_level; }
 
 const int hlop::node_list::get_node_num() const { return nlist.size(); }
 
@@ -116,14 +106,10 @@ const int hlop::node_list::get_inter_level(const std::string &node1, const std::
 	return -1; // unreachable
 }
 
-const int hlop::node_list::get_inter_level(const hlop::comm_pair_t &cp) const {
-	return get_inter_level(cp.get_src_node(), cp.get_dst_node());
-}
-
-const std::string &hlop::node_list::get_node_id_by_rank(int rank) const {
+const hlop::df_node_t hlop::node_list::get_node_id_by_rank(int rank) const {
 	if (rmap.find(rank) == rmap.end())
 		HLOP_ERR(hlop::format("rank {} not in this list", rank));
-	return rmap.at(rank);
+	return hlop::df_node{rmap.at(rank)};
 }
 
 std::vector<std::string_view> hlop::node_list::get_top_k_nodes(int k) const {

@@ -5,7 +5,6 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_multifit_nlinear.h>
 #include <gsl/gsl_vector.h>
-#include <utility>
 #include <vector>
 
 #include "err.h"
@@ -114,5 +113,5 @@ hlop::exponential_params_t hlop::curve_fit_exponential(const std::vector<double>
 	gsl_vector_free(params);
 	gsl_multifit_nlinear_free(workspace);
 
-	return std::move(results);
+	return results;
 }

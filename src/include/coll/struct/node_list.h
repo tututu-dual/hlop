@@ -9,8 +9,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include "comm_pair.h"
+#include "node/df_node.h"
 #include "platform.h"
+#include "struct/comm_pair.h"
 #include "struct/type.h"
 
 namespace hlop {
@@ -50,29 +51,10 @@ public:
 	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
 	 */
 	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::rank_arrangement_t rule);
+
 	~node_list() = default;
 
 public:
-	/**
-	 * @brief get the number of cores in a node.
-	 * @return int, the number of cores in a node.
-	 */
-	const int get_node_cores() const;
-	/**
-	 * @brief get the number of numa cores in a node.
-	 * @return int, the number of numa cores in a node.
-	 */
-	const int get_ncore_per_numa() const;
-	/**
-	 * @brief get the max network level in this system.
-	 * @return int, the max network level in this system.
-	 */
-	const int get_max_network_level() const;
-	/**
-	 * @brief get the max core level in this system.
-	 * @return int, the max core level in this system.
-	 */
-	const int get_max_core_level() const;
 	/**
 	 * @brief get the number of node in this list.
 	 * @return int, the number of nodes in this list.
@@ -137,7 +119,7 @@ public:
 	 * @param rank int, process rank.
 	 * @return string, the name of the node corresponding to the process rank.
 	 */
-	const std::string &get_node_id_by_rank(int rank) const;
+	const hlop::df_node_t get_node_id_by_rank(int rank) const;
 	/**
 	 * @brief get the first k node in this node list.
 	 * @param k int, the number of top nodes to retrieve.
@@ -172,11 +154,6 @@ private:
 	const int nproc_per_node;
 
 	const hlop::platform_t platform;
-	const int node_cores;
-	const int numa_cores;
-	const int ncore_per_numa;
-	const int max_network_level;
-	const int max_core_level;
 	const std::regex node_regex;
 	const std::unordered_map<hlop::rank_arrangement, std::function<int(int)>> rank_arrangement_map;
 };

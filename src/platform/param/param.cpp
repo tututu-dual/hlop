@@ -4,9 +4,11 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
+#include "aux.h"
 #include "err.h"
 #include "fit.h"
 #include "m_debug.h"
@@ -20,7 +22,7 @@ const std::vector<std::string_view> hlop::param::get_categorys() const {
 	for (const auto &pair : params)
 		categories.emplace_back(pair.first);
 
-	return std::move(categories);
+	return categories;
 }
 
 const std::vector<double> &hlop::param::get_msg_size_range() const { return msg_size_pow; }
@@ -62,6 +64,7 @@ const std::vector<double> &hlop::param::get_params(const std::string &param_cate
 
 	const auto &it = params.find(param_category);
 	INFO("{}", it->first);
+	DEBUG("{}: {}", it->first, hlop::vtos(it->second));
 	return it->second;
 }
 

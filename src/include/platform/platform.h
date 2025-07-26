@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "node/node.h"
+
 namespace hlop {
 /**
  * @brief enum class platform.
@@ -30,13 +32,15 @@ std::ostream &operator<<(std::ostream &os, const hlop::platform &p);
  */
 class node_parser {
 public:
+	static const int get_max_node_level(hlop::platform_t pf);
 	static const int get_node_cores(hlop::platform_t pf);
+	static const int get_max_core_level(hlop::platform_t pf);
 	static const int get_numa_cores(hlop::platform_t pf);
 	static const int get_ncore_per_numa(hlop::platform_t pf);
-	static const int get_max_network_level(hlop::platform_t pf);
-	static const int get_max_core_level(hlop::platform_t pf);
+	static const int get_ncore_per_unit(hlop::platform_t pf);
 	static const std::regex &get_node_regex(hlop::platform_t pf);
 	static const std::vector<std::string> parser_node_list(hlop::platform_t pf, const std::string &node_list_str);
+	static const std::vector<hlop::node> parse_node_list(hlop::platform_t pf, const std::string &node_list_str);
 };
 } // namespace hlop
 

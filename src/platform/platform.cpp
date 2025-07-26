@@ -1,7 +1,11 @@
 #include <iostream>
+#include <regex>
+#include <string>
+#include <vector>
 
 #include "aux.h"
 #include "node/df_node_parser.h"
+#include "node/node.h"
 #include "platform.h"
 
 std::ostream &hlop::operator<<(std::ostream &os, const hlop::platform &p) {
@@ -9,10 +13,36 @@ std::ostream &hlop::operator<<(std::ostream &os, const hlop::platform &p) {
 	return os;
 }
 
+const int hlop::node_parser::get_max_node_level(hlop::platform_t pf) {
+	switch (pf) {
+	case hlop::platform::DF:
+		return hlop::df_node_parser::MAX_NODE_LEVEL;
+	case hlop::platform::TH:
+		HLOP_ERR("TH platform is not implemented yet");
+		return -1; // unreachable
+	default:
+		HLOP_ERR("unknown platform type");
+		return -1; // unreachable
+	}
+}
+
 const int hlop::node_parser::get_node_cores(hlop::platform_t pf) {
 	switch (pf) {
 	case hlop::platform::DF:
 		return hlop::df_node_parser::NODE_CORES;
+	case hlop::platform::TH:
+		HLOP_ERR("TH platform is not implemented yet");
+		return -1; // unreachable
+	default:
+		HLOP_ERR("unknown platform type");
+		return -1; // unreachable
+	}
+}
+
+const int hlop::node_parser::get_max_core_level(hlop::platform_t pf) {
+	switch (pf) {
+	case hlop::platform::DF:
+		return hlop::df_node_parser::MAX_CORE_LEVEL;
 	case hlop::platform::TH:
 		HLOP_ERR("TH platform is not implemented yet");
 		return -1; // unreachable
@@ -48,23 +78,10 @@ const int hlop::node_parser::get_ncore_per_numa(hlop::platform_t pf) {
 	}
 }
 
-const int hlop::node_parser::get_max_network_level(hlop::platform_t pf) {
+const int hlop::node_parser::get_ncore_per_unit(hlop::platform_t pf) {
 	switch (pf) {
 	case hlop::platform::DF:
-		return hlop::df_node_parser::MAX_NETWORK_LEVEL;
-	case hlop::platform::TH:
-		HLOP_ERR("TH platform is not implemented yet");
-		return -1; // unreachable
-	default:
-		HLOP_ERR("unknown platform type");
-		return -1; // unreachable
-	}
-}
-
-const int hlop::node_parser::get_max_core_level(hlop::platform_t pf) {
-	switch (pf) {
-	case hlop::platform::DF:
-		return hlop::df_node_parser::MAX_CORE_LEVEL;
+		return hlop::df_node_parser::NCORE_PER_UNIT;
 	case hlop::platform::TH:
 		HLOP_ERR("TH platform is not implemented yet");
 		return -1; // unreachable
@@ -88,6 +105,19 @@ const std::regex &hlop::node_parser::get_node_regex(hlop::platform_t pf) {
 }
 
 const std::vector<std::string> hlop::node_parser::parser_node_list(hlop::platform_t pf, const std::string &node_list_str) {
+	switch (pf) {
+	case hlop::platform::DF:
+		return hlop::df_node_parser::parse_node_list_aux(node_list_str);
+	case hlop::platform::TH:
+		HLOP_ERR("TH platform is not implemented yet");
+		return hlop::df_node_parser::parse_node_list_aux(node_list_str); // placeholder
+	default:
+		HLOP_ERR("unknown platform type");
+		return hlop::df_node_parser::parse_node_list_aux(node_list_str); // placeholder
+	}
+}
+
+const std::vector<hlop::node> hlop::node_parser::parse_node_list(hlop::platform_t pf, const std::string &node_list_str) {
 	switch (pf) {
 	case hlop::platform::DF:
 		return hlop::df_node_parser::parse_node_list(node_list_str);

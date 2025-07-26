@@ -7,7 +7,6 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
-#include <utility>
 #include <vector>
 
 #include "aux.h"
@@ -41,7 +40,7 @@ public:
 	 * @param resources_file string, path to the resources file.
 	 * @throws hlop_err, if the resources file cannot be opened, is empty, or has invalid format.
 	 */
-	explicit param(const std::string &resources_file);
+	param(const std::string &resources_file);
 	~param() = default;
 
 public:
@@ -142,7 +141,7 @@ inline const std::string param::get_category_with_labels(const Labels &...labels
 	if (key.back() == '_') {
 		key.pop_back(); // Remove trailing underscore
 	}
-	return std::move(key);
+	return key;
 }
 } // namespace hlop
 
