@@ -4,7 +4,11 @@
 #include "struct/type.h"
 
 int main(int argc, char const *argv[]) {
-	hlop::node_list_t l{hlop::platform::DF, "g11r4n[01-03]", 16, hlop::rank_arrangement::CYCLIC};
+	hlop::node_list_t l{hlop::platform::DF,
+	                    "g11r4n[01-03]",
+	                    16,
+	                    {.node_arrange = hlop::rank_arrangement::BLOCK,
+	                     .core_arrange = hlop::rank_arrangement::BLOCK}};
 	INFO("node list: {}", l);
 	hlop::allgather a{};
 	auto res = a.predict(hlop::algo_type::RECURSIVE_DOUBLING, l, 4, 0);

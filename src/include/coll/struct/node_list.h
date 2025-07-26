@@ -65,7 +65,7 @@ public:
 	 * @param rule rank_arrangement, the rank arrangement rule to use.
 	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
 	 */
-	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::rank_arrangement_t rule);
+	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::arrangement_t rule);
 
 	~node_list() = default;
 
@@ -115,25 +115,17 @@ public:
 	 */
 	const int get_level(const hlop::comm_pair_t &cp) const;
 	/**
-	 * @brief get net level between node1 and node2.
-	 * @param node1 string, name of the first node.
-	 * @param node2 string, name of the second node.
-	 * @return int, the network level between node1 and node2.
-	 * @throws hlop_err, if node1 or node2 is not in this list, or the range greater than max network level.
-	 */
-	const int get_inter_level(const hlop::node_t &node1, const hlop::node_t &node2) const;
-	/**
-	 * @brief get net level between node in this communication pair.
-	 * @param cp comm_pair, communication pair.
-	 * @return int, the network level between nodes in the communication pair.
-	 */
-	const int get_inter_level(const hlop::comm_pair_t &cp) const;
-	/**
 	 * @brief get node name by process rank.
 	 * @param rank int, process rank.
 	 * @return node, the node corresponding to the process rank.
 	 */
 	const hlop::node_t &get_node_by_rank(int rank) const;
+	/**
+	 * @brief get node pointer by process rank.
+	 * @param rank int, process rank.
+	 * @return const_node_ptr, a pointer to the node corresponding to the process rank.
+	 */
+	hlop::const_node_ptr_t get_node_ptr_by_rank(int rank) const;
 	/**
 	 * @brief get the first k node in this node list.
 	 * @param k int, the number of top nodes to retrieve.
@@ -144,14 +136,6 @@ public:
 
 public:
 	friend std::ostream &operator<<(std::ostream &os, const node_list_t &nl);
-
-private:
-	/**
-	 * @brief check if a node is in this node list.
-	 * @param node node, the node to check.
-	 * @return bool, true if the node is in the list, false otherwise.
-	 */
-	bool has_node(const hlop::node_t &node) const;
 
 private:
 	std::vector<hlop::const_node_ptr> nlist;

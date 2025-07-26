@@ -10,7 +10,7 @@ hlop::node::node(const std::string &node_str) : node_name(node_str) {}
 
 const std::string &hlop::node::name() const { return node_name; }
 
-void hlop::node::bind_core(int rank, int core) {
+void hlop::node::bind_core(int rank, int core) const {
 	if (core < 0 || core >= node_cores())
 		HLOP_ERR(hlop::format("core {} is not in range [0, {}]", core, node_cores() - 1));
 	if (rank_core_map.size() >= node_cores())
@@ -43,6 +43,9 @@ const int hlop::node::get_core(int rank) const {
 }
 
 std::ostream &hlop::operator<<(std::ostream &os, const node_t &n) {
-	os << n.name();
+	os << n.name() << "{ ";
+	for (const auto &rc : n.rank_core_map)
+		os << "{" << rc.first << ", " << rc.second << "} ";
+	os << "}";
 	return os;
 }

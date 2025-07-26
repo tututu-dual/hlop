@@ -35,10 +35,84 @@ hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str
 }
 
 hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str,
-                           int ppn, hlop::rank_arrangement_t rule)
+                           int ppn, hlop::arrangement_t rule)
     : node_list(pf, node_list_str, ppn) {
-	// for (int i = 0; i < ppn * nlist.size(); ++i)
-	// 	rmap.emplace(i, nlist.at(i));
+	int rank_num = ppn * nlist.size();
+	for (int i = 0; i < rank_num; ++i) {
+		switch (rule.node_arrange) {
+		case hlop::rank_arrangement::BLOCK: {
+			int node_idx = i / ppn;
+			switch (rule.core_arrange) {
+			case hlop::rank_arrangement::BLOCK: {
+				int core_idx = i % ppn;
+				rmap.emplace(i, nlist.at(node_idx));
+				nlist.at(node_idx)->bind_core(i, core_idx);
+				break;
+			}
+			case hlop::rank_arrangement::CYCLIC: {
+				int core_idx = i % hlop::node_parser::get_numa_cores(platform);
+				rmap.emplace(i, nlist.at(node_idx));
+				nlist.at(node_idx)->bind_core(i, core_idx);
+				break;
+			}
+			case hlop::rank_arrangement::PLANE: {
+				HLOP_ERR("plane rank arrangement is not supported yet");
+				break;
+			}
+			case hlop::rank_arrangement::ARBITRARY: {
+				HLOP_ERR("arbitrary rank arrangement is not supported yet");
+				break;
+			}
+			default: {
+				HLOP_ERR(hlop::format("unknown core arrangement type {}", rule.core_arrange));
+				break;
+			}
+			}
+			break;
+		}
+		case hlop::rank_arrangement::CYCLIC: {
+			int node_idx = i % nlist.size();
+			switch (rule.core_arrange) {
+			case hlop::rank_arrangement::BLOCK: {
+				int core_idx = i / nlist.size();
+				rmap.emplace(i, nlist.at(node_idx));
+				nlist.at(node_idx)->bind_core(i, core_idx);
+				break;
+			}
+			case hlop::rank_arrangement::CYCLIC: {
+				int core_idx = i / nlist.size() % hlop::node_parser::get_numa_cores(platform);
+				rmap.emplace(i, nlist.at(node_idx));
+				nlist.at(node_idx)->bind_core(i, core_idx);
+				break;
+			}
+			case hlop::rank_arrangement::PLANE: {
+				HLOP_ERR("plane rank arrangement is not supported yet");
+				break;
+			}
+			case hlop::rank_arrangement::ARBITRARY: {
+				HLOP_ERR("arbitrary rank arrangement is not supported yet");
+				break;
+			}
+			default: {
+				HLOP_ERR(hlop::format("unknown core arrangement type {}", rule.core_arrange));
+				break;
+			}
+			}
+		}
+		case hlop::rank_arrangement::PLANE: {
+			HLOP_ERR("plane rank arrangement is not supported yet");
+			break;
+		}
+		case hlop::rank_arrangement::ARBITRARY: {
+			HLOP_ERR("arbitrary rank arrangement is not supported yet");
+			break;
+		}
+		default: {
+			HLOP_ERR(hlop::format("unknown rank arrangement type {}", rule.node_arrange));
+			break;
+		}
+		}
+	}
 }
 
 const hlop::platform_t hlop::node_list::get_platform() const { return platform; }
@@ -68,39 +142,20 @@ const int hlop::node_list::get_level(const hlop::comm_pair_t &cp) const {
 	return get_level(cp.get_src_rank(), cp.get_dst_rank());
 }
 
-const int hlop::node_list::get_inter_level(const hlop::node_t &node1, const hlop::node_t &node2) const {
-	if (!has_node(node1))
-		HLOP_ERR(hlop::format("node {} not in this list", node1.name()));
-	if (!has_node(node2))
-		HLOP_ERR(hlop::format("node {} not in this list", node2.name()));
-
-	auto max_level = hlop::node_parser::get_max_node_level(platform);
-	for (int i = 0; i < max_level; ++i) {
-	}
-	HLOP_ERR(hlop::format("undefined net level between {} and {}", node1.name(), node2.name()));
-	return -1; // unreachable
-}
-
-const int hlop::node_list::get_inter_level(const hlop::comm_pair_t &cp) const {
-	return get_inter_level(cp.get_src_node(), cp.get_dst_node());
-}
-
 const hlop::node_t &hlop::node_list::get_node_by_rank(int rank) const {
+	return *get_node_ptr_by_rank(rank);
+}
+
+hlop::const_node_ptr_t hlop::node_list::get_node_ptr_by_rank(int rank) const {
 	if (rmap.find(rank) == rmap.end())
 		HLOP_ERR(hlop::format("rank {} not in this list", rank));
-	return *(rmap.at(rank));
+	return rmap.at(rank);
 }
 
 const std::vector<hlop::const_node_ptr> hlop::node_list::get_top_k_nodes(int k) const {
 	if (k <= 0 || k > get_node_num())
 		HLOP_ERR(hlop::format("value k(={}): should be in range [1, {}]", k, get_node_num()));
-
 	return {nlist.begin(), nlist.begin() + k};
-}
-
-bool hlop::node_list::has_node(const hlop::node_t &node) const {
-	return std::find_if(nlist.begin(), nlist.end(),
-	                    [&node](const auto &n) { return *n == node; }) != nlist.end();
 }
 
 std::ostream &hlop::operator<<(std::ostream &os, const node_list &nl) {

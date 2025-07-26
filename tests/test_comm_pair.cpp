@@ -9,12 +9,17 @@ int main(int argc, char const *argv[]) {
 	auto node1 = std::make_shared<hlop::df_node>("i10r4n03");
 	for (int i = 0; i < 16; ++i) // even rank 0-31 -> core 0-15
 		node1->bind_core(2 * i, i);
-	auto node2 = std::make_shared<hlop::df_node>("i10r4n04");
+	auto node2 = std::make_shared<hlop::df_node>("i10r5n04");
 	for (int i = 0; i < 16; ++i) // odd rank 0-31 -> core 0-15
 		node2->bind_core(2 * i + 1, i);
 	auto node3 = std::make_shared<hlop::df_node>("i10r4n05");
 	for (int i = 32; i < 48; ++i) // rank 32-47 -> core 0-15
 		node3->bind_core(i, i - 32);
+	INFO("level between rank1 and rank2 is {}", *node1 - *node2);
+	INFO("level between rank1 and rank3 is {}", node2->get_core_level(1, 3));
+	INFO("level between rank1 and rank13 is {}", node2->get_core_level(1, 13));
+	INFO("level between rank1 and rank31 is {}", node2->get_core_level(1, 31));
+	INFO("node3 is {}", node3);
 	hlop::comm_pair_t p1{node1, 0,    // node 1, rank 0, core 0
 	                     node2, 1};   // node 2, rank 1, core 0
 	hlop::comm_pair_t p2{node1, 2,    // node 1, rank 2, core 1

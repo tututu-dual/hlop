@@ -89,7 +89,7 @@ public:
 	 * @param core int, the core to bind the rank to.
 	 * @throws hlop_err, if the core is not in the range of [0, node_cores - 1] or the rank is already bound to a core.
 	 */
-	void bind_core(int rank, int core);
+	void bind_core(int rank, int core) const;
 	/**
 	 * @brief get the unit id of a process rank.
 	 * @param rank int, the process rank.
@@ -117,7 +117,7 @@ protected:
 
 protected:
 	const std::string node_name;
-	std::unordered_map<int, int> rank_core_map;
+	mutable std::unordered_map<int, int> rank_core_map;
 };
 typedef node::node_t node_t;
 typedef node::node_ptr node_ptr;

@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "msg.h"
+#include "aux.h"
 
 #ifdef M_DEBUG
 #define INFO(fmt, ...)                                                           \
