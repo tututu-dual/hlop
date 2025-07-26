@@ -3,7 +3,6 @@
 # aux_source_directory(node PLATFORM_SRC)
 # aux_source_directory(param PLATFORM_SRC)
 set(PLATFORM_SRC
-	node/df_node_parser.cpp
 	node/node.cpp
 	node/df_node.cpp
 	param/param.cpp

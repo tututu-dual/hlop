@@ -29,6 +29,9 @@ extern const std::function<double(double, hlop::exponential_params_t)> exp_fit_f
  */
 class param {
 public:
+	using param_t = hlop::param;
+
+public:
 	/**
 	 * @brief default constructor.
 	 * @note This constructor is deleted to prevent instantiation without parameters.
@@ -113,7 +116,7 @@ private:
 	std::vector<double> msg_size_pow; // length of param vector, 2 << i is the message size of this coloum
 	std::unordered_map<std::string, const std::vector<double>> params;
 };
-typedef param param_t;
+typedef param::param_t param_t;
 
 template <typename... Labels>
 inline bool param::has_category(const Labels &...labels) {

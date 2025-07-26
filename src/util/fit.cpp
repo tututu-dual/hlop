@@ -30,7 +30,7 @@ int hlop::exponential_residual(const gsl_vector *params, void *data, gsl_vector 
 
 	// 计算每个数据点的残差
 	for (std::size_t i = 0; i < n; ++i) {
-		double model = exp_fit_func_1(x[i], A, B, C);
+		double model = hlop::exp_fit_func_1(x[i], A, B, C);
 		gsl_vector_set(residuals, i, y[i] - model);
 	}
 

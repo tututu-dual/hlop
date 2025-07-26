@@ -1,6 +1,7 @@
 #ifndef __AUX_H__
 #define __AUX_H__
 
+#include <memory>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -80,6 +81,25 @@ const std::string vtos(const std::vector<T> &v) {
 	std::ostringstream oss;
 	for (const auto &i : v)
 		oss << i << ", ";
+	return oss.str();
+}
+
+/**
+ * @brief vector of shared pointers to string conversion.
+ * @tparam T type of the vector item.
+ * @param v vector<shared_ptr<T>>, vector to be converted.
+ * @return string, converted from the vector like "0x55a1c3f4eeb0, 0x55a1c3f4eec0, nullptr, ".
+ * @note This function outputs the address of the managed object or "nullptr" for empty pointers.
+ */
+template <typename T>
+const std::string vtos(const std::vector<std::shared_ptr<T>> &v) {
+	std::ostringstream oss;
+	for (const auto &i : v) {
+		if (i)
+			oss << *i << ", "; // 输出智能指针管理的原生指针地址
+		else
+			oss << "nullptr, "; // 处理空智能指针
+	}
 	return oss.str();
 }
 

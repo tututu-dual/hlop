@@ -2,8 +2,10 @@
 #define __NODE_H__
 
 #include <iostream>
-#include <map>
+#include <memory>
+#include <regex>
 #include <string>
+#include <unordered_map>
 
 namespace hlop {
 /**
@@ -17,32 +19,28 @@ namespace hlop {
  */
 class node {
 public:
-	friend std::ostream &operator<<(std::ostream &os, const node &n);
-	/**
-	 * @brief get the core level between core1 and core2.
-	 * @param n node, the node to which the cores belong.
-	 * @param rank1 int, rank bind to core1.
-	 * @param rank2 int, rank bind to core2.
-	 * @return int, the core level between core1 and core2.
-	 * @throws hlop_err, if rank1 or rank2 is not in the range [0, node_cores - 1], or the range greater than max core level.
-	 */
-	friend const int get_core_level(const node &n, int rank1, int rank2);
+	using node_t = hlop::node;
+	using node_ptr = std::shared_ptr<hlop::node>;
+	using node_ptr_t = node_ptr;
+	using const_node_ptr = std::shared_ptr<const hlop::node>;
+	using const_node_ptr_t = const_node_ptr;
 
 public:
+	friend std::ostream &operator<<(std::ostream &os, const node_t &n);
+
+public:
+	node() = delete;
+	node(const std::string &node_str);
 	virtual ~node() = default;
 
 public:
-	virtual bool operator==(const node &other) const = 0;
-	virtual bool operator!=(const node &other) const = 0;
-	virtual bool operator<(const node &other) const = 0;
-	virtual bool operator>(const node &other) const = 0;
+	virtual bool operator==(const node_t &other) const = 0;
+	virtual bool operator!=(const node_t &other) const = 0;
+	virtual bool operator<(const node_t &other) const = 0;
+	virtual bool operator>(const node_t &other) const = 0;
+	virtual const int operator-(const node_t &other) const = 0;
 
 public:
-	/**
-	 * @brief get the name of the node.
-	 * @return string, the name of the node.
-	 */
-	virtual const std::string &name() const = 0;
 	/**
 	 * @brief get the maximum node level.
 	 * @return int, the maximum node level.
@@ -73,8 +71,18 @@ public:
 	 * @return int, the number of units in the node.
 	 */
 	virtual const int ncore_per_unit() const = 0;
+	/**
+	 * @brief get the regex for matching node names.
+	 * @return regex, the regex for matching node names.
+	 */
+	virtual const std::regex &get_node_regex() const = 0;
 
 public:
+	/**
+	 * @brief get the name of the node.
+	 * @return string, the name of the node.
+	 */
+	const std::string &name() const;
 	/**
 	 * @brief bind a process rank to a core.
 	 * @param rank int, the process rank to bind.
@@ -89,6 +97,14 @@ public:
 	 * @throws hlop_err, if the rank is not in the range of [0, node_cores - 1].
 	 */
 	const int get_unit_id(int rank) const;
+	/**
+	 * @brief get the core level between two process ranks.
+	 * @param rank1 int, the first process rank.
+	 * @param rank2 int, the second process rank.
+	 * @return int, the core level between the two process ranks.
+	 * @throws hlop_err, if rank1 or rank2 is not in the range of [0, node_cores - 1].
+	 */
+	const int get_core_level(int rank1, int rank2) const;
 
 protected:
 	/**
@@ -100,12 +116,16 @@ protected:
 	const int get_core(int rank) const;
 
 protected:
-	std::map<int, int> rank_core_map;
+	const std::string node_name;
+	std::unordered_map<int, int> rank_core_map;
 };
-typedef node node_t;
+typedef node::node_t node_t;
+typedef node::node_ptr node_ptr;
+typedef node::node_ptr_t node_ptr_t;
+typedef node::const_node_ptr const_node_ptr;
+typedef node::const_node_ptr_t const_node_ptr_t;
 
-std::ostream &operator<<(std::ostream &os, const node &n);
-const int get_core_level(const node &n, int rank1, int rank2);
+std::ostream &operator<<(std::ostream &os, const node_t &n);
 } // namespace hlop
 
 #endif // __NODE_H__

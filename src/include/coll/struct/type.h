@@ -26,7 +26,7 @@ enum class op_type {
 };
 typedef op_type op_type_t;
 
-std::ostream &operator<<(std::ostream &os, const hlop::op_type &op);
+std::ostream &operator<<(std::ostream &os, const op_type_t &op);
 
 /**
  * @brief enum class algorithm type.
@@ -58,7 +58,7 @@ enum class algo_type {
 };
 typedef algo_type algo_type_t;
 
-std::ostream &operator<<(std::ostream &os, const hlop::algo_type &algo);
+std::ostream &operator<<(std::ostream &os, const algo_type_t &algo);
 
 /**
  * @brief enum class rank arrangement.
@@ -76,7 +76,13 @@ enum class rank_arrangement {
 };
 typedef rank_arrangement rank_arrangement_t;
 
-std::ostream &operator<<(std::ostream &os, const hlop::rank_arrangement &ra);
+std::ostream &operator<<(std::ostream &os, const rank_arrangement_t &ra);
+
+struct arrangement {
+	rank_arrangement_t node_arrange;
+	rank_arrangement_t core_arrange;
+};
+typedef arrangement arrangement_t;
 } // namespace hlop
 
 #endif // __TYPES_H__

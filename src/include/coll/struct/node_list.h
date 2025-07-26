@@ -1,15 +1,12 @@
 #ifndef __NODE_LIST_H__
 #define __NODE_LIST_H__
 
-#include <functional>
 #include <iostream>
-#include <regex>
 #include <string>
-#include <string_view>
 #include <unordered_map>
 #include <vector>
 
-#include "node/df_node.h"
+#include "node/node.h"
 #include "platform.h"
 #include "struct/comm_pair.h"
 #include "struct/type.h"
@@ -26,22 +23,40 @@ namespace hlop {
  */
 class node_list {
 public:
+	using node_list_t = node_list;
+
+public:
 	/**
 	 * @brief default constructor of node_list.
 	 * @note This constructor is not accessible directly and should not be used.
 	 * It is provided to prevent the creation of an empty node_list.
 	 */
 	node_list() = delete;
+
+private:
 	/**
+	 * @brief constructor of node_list.
+	 * @param pf platform, the platform type of this node list.
+	 * @param node_list_str string, a string representation of the node list.
+	 * @param ppn int, the number of processes per node.
+	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
+	 * @note This can not access directly.
+	 */
+	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn);
+
+public:
+	/**
+	 * @fixme
 	 * @brief constructor of node_list with ranks.
 	 * @param pf platform, the platform type of this node list.
 	 * @param node_list_str string, a string representation of the node list.
 	 * @param ppn int, the number of processes per node.
-	 * @param ranks vector<int>, a vector of process ranks in this node list.
+	 * @param ranks vector<int>, a vector of process ranks bind to core in this node list.
 	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
 	 */
 	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, std::vector<int> ranks);
 	/**
+	 * @fixme
 	 * @brief constructor of node_list with ranks and rule.
 	 * @param pf platform, the platform type of this node list.
 	 * @param node_list_str string, a string representation of the node list.
@@ -56,6 +71,16 @@ public:
 
 public:
 	/**
+	 * @brief get platform type this node list belong to.
+	 * @return platform, the platform type of this node list.
+	 */
+	const hlop::platform_t get_platform() const;
+	/**
+	 * @brief get the number of process per node.
+	 * @return int, the number of processes per node.
+	 */
+	const int get_ppn() const;
+	/**
 	 * @brief get the number of node in this list.
 	 * @return int, the number of nodes in this list.
 	 */
@@ -64,42 +89,31 @@ public:
 	 * @brief get node list.
 	 * @return vector<string>, a vector of node names in this list.
 	 */
-	std::vector<std::string_view> get_node_list() const;
-	/**
-	 * @brief get the number of process per node.
-	 * @return int, the number of processes per node.
-	 */
-	const int get_ppn() const;
-	/**
-	 * @brief get process ranks in this node list.
-	 * @return vector<int>, a vector of process ranks in this node list.
-	 */
-	const std::unordered_map<int, const std::string &> &get_ranks() const;
-
+	const std::vector<hlop::const_node_ptr> &get_node_list() const;
 	/**
 	 * @brief get the number of ranks in this node list.
 	 * @return int, the number of ranks in this node list.
 	 */
 	const int get_rank_num() const;
 	/**
-	 * @brief get platform type this node list belong to.
-	 * @return platform, the platform type of this node list.
+	 * @brief get process ranks in this node list.
+	 * @return unordered_map<int, node_cptr>, a map of process ranks with node in this node list.
 	 */
-	const hlop::platform_t get_platform() const;
+	const std::unordered_map<int, hlop::const_node_ptr> &get_ranks() const;
 	/**
-	 * @brief get core level between core1 and core2.
-	 * @param rank1 int, rank bind to core1.
-	 * @param rank2 int, rank bind to core2.
-	 * @return int, the core level between core1 and core2.
+	 * @brief get level between rank1 and rank2.
+	 * @param rank1 int, rank bind to node1, core1.
+	 * @param rank2 int, rank bind to node2, core2.
+	 * @return int, the level between core1 and core2.
 	 * @throws hlop_err, if rank1 or rank2 is not in this list, or the range greater than max core level.
 	 */
-	const int get_intra_level(int rank1, int rank2) const;
+	const int get_level(int rank1, int rank2) const;
 	/**
 	 * @brief get core level between node in this communication pair.
 	 * @param cp comm_pair, communication pair.
 	 * @return int, the core level between cores in the communication pair.
 	 */
-	const int get_intra_level(const hlop::comm_pair_t &cp) const;
+	const int get_level(const hlop::comm_pair_t &cp) const;
 	/**
 	 * @brief get net level between node1 and node2.
 	 * @param node1 string, name of the first node.
@@ -107,7 +121,7 @@ public:
 	 * @return int, the network level between node1 and node2.
 	 * @throws hlop_err, if node1 or node2 is not in this list, or the range greater than max network level.
 	 */
-	const int get_inter_level(const std::string &node1, const std::string &node2) const;
+	const int get_inter_level(const hlop::node_t &node1, const hlop::node_t &node2) const;
 	/**
 	 * @brief get net level between node in this communication pair.
 	 * @param cp comm_pair, communication pair.
@@ -117,49 +131,37 @@ public:
 	/**
 	 * @brief get node name by process rank.
 	 * @param rank int, process rank.
-	 * @return string, the name of the node corresponding to the process rank.
+	 * @return node, the node corresponding to the process rank.
 	 */
-	const hlop::df_node_t get_node_id_by_rank(int rank) const;
+	const hlop::node_t &get_node_by_rank(int rank) const;
 	/**
 	 * @brief get the first k node in this node list.
 	 * @param k int, the number of top nodes to retrieve.
-	 * @return vector<string_view>, a vector of the top k node names.
+	 * @return vector<const_node_ptr>, a vector of the top k node.
 	 * @throws hlop_err, if k is not in range [1, node_num].
 	 */
-	std::vector<std::string_view> get_top_k_nodes(int k) const;
+	const std::vector<hlop::const_node_ptr> get_top_k_nodes(int k) const;
 
 public:
-	friend std::ostream &operator<<(std::ostream &os, const node_list &nl);
+	friend std::ostream &operator<<(std::ostream &os, const node_list_t &nl);
 
 private:
-	/**
-	 * @brief constructor of node_list.
-	 * @param pf platform, the platform type of this node list.
-	 * @param node_list_str string, a string representation of the node list.
-	 * @param ppn int, the number of processes per node.
-	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
-	 * @note This can not access directly.
-	 */
-	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn);
 	/**
 	 * @brief check if a node is in this node list.
-	 * @param node string, name of the node to check.
+	 * @param node node, the node to check.
 	 * @return bool, true if the node is in the list, false otherwise.
 	 */
-	bool has_node(const std::string &node) const;
+	bool has_node(const hlop::node_t &node) const;
 
 private:
-	const std::vector<std::string> nlist;
-	std::unordered_map<int, const std::string &> rmap;
-	const int nproc_per_node;
-
-	const hlop::platform_t platform;
-	const std::regex node_regex;
-	const std::unordered_map<hlop::rank_arrangement, std::function<int(int)>> rank_arrangement_map;
+	std::vector<hlop::const_node_ptr> nlist;
+	std::unordered_map<int, hlop::const_node_ptr> rmap;
+	int nproc_per_node;
+	hlop::platform_t platform;
 };
-typedef node_list node_list_t;
+typedef node_list::node_list_t node_list_t;
 
-std::ostream &operator<<(std::ostream &os, const node_list &nl);
+std::ostream &operator<<(std::ostream &os, const node_list_t &nl);
 } // namespace hlop
 
 #endif // __NODE_LIST_H__
