@@ -1,6 +1,7 @@
 #ifndef __AUX_H__
 #define __AUX_H__
 
+#include <map>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -81,7 +82,10 @@ const std::string vtos(const std::vector<T> &v) {
 	std::ostringstream oss;
 	for (const auto &i : v)
 		oss << i << ", ";
-	return oss.str();
+	std::string str = oss.str();
+	if (!str.empty() && str.size() > 2)
+		str.erase(str.size() - 2);
+	return str;
 }
 
 /**
@@ -100,7 +104,48 @@ const std::string vtos(const std::vector<std::shared_ptr<T>> &v) {
 		else
 			oss << "nullptr, "; // 处理空智能指针
 	}
-	return oss.str();
+	std::string str = oss.str();
+	if (!str.empty() && str.size() > 2)
+		str.erase(str.size() - 2);
+	return str;
+}
+
+/**
+ * @brief map to string conversion.
+ * @tparam K type of the map key.
+ * @tparam V type of the map value.
+ * @param m map<K, V>, map to be converted.
+ * @return string, converted from the map like "{key1: value1}, {key2: value2}, ".
+ * @note This function outputs the key-value pairs in the format "{key: value}".
+ */
+template <typename K, typename V>
+const std::string mtos(const std::map<K, V> &m) {
+	std::ostringstream oss;
+	for (const auto &i : m)
+		oss << "{" << i.first << ": " << i.second << "}, ";
+	std::string str = oss.str();
+	if (!str.empty() && str.size() > 2)
+		str.erase(str.size() - 2);
+	return str;
+}
+
+/**
+ * @brief unordered_map to string conversion.
+ * @tparam K type of the map key.
+ * @tparam V type of the map value.
+ * @param m unordered_map<K, V>, map to be converted.
+ * @return string, converted from the map like "{key1: value1}, {key2: value2}, ".
+ * @note This function outputs the key-value pairs in the format "{key: value}".
+ */
+template <typename K, typename V>
+const std::string mtos(const std::unordered_map<K, V> &m) {
+	std::ostringstream oss;
+	for (const auto &i : m)
+		oss << "{" << i.first << ": " << i.second << "}, ";
+	std::string str = oss.str();
+	if (!str.empty() && str.size() > 2)
+		str.erase(str.size() - 2);
+	return str;
 }
 
 /**

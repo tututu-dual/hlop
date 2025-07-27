@@ -33,21 +33,20 @@ bool hlop::comm_pair::operator==(const comm_pair_t &other) const {
 	const auto &other_src_node = other.get_src_node();
 	const auto &other_dst_node = other.get_dst_node();
 
-	if (is_mid_node_pair() && other.is_mid_node_pair()) {
+	if (is_mid_pair() && other.is_mid_pair()) {
 		return (this_src_node == other_src_node) &&
 		       (this_src_node.get_unit_id(get_src_rank()) ==
 		        other_src_node.get_unit_id(other.get_src_rank())) &&
 		       (*sendrecv == *other.sendrecv);
 	}
 
-	if (!is_mid_node_pair() && !other.is_mid_node_pair()) {
+	if (!is_mid_pair() && !other.is_mid_pair()) {
 		if (is_intra_node_pair() && other.is_intra_node_pair()) {
-			if (this_src_node != other_src_node) {
-				return false;
-			}
-
 			const auto &this_node = get_src_node();
 			const auto &other_node = other.get_src_node();
+
+			if (this_node != other_node)
+				return false;
 
 			if (is_intra_unit_pair() && other.is_intra_unit_pair()) {
 				return this_node.get_unit_id(get_src_rank()) ==
@@ -78,31 +77,37 @@ bool hlop::comm_pair::operator==(const comm_pair_t &other) const {
 }
 
 bool hlop::comm_pair::operator!=(const comm_pair_t &other) const {
-	return !this->operator==(other);
+	return !operator==(other);
 }
 
 bool hlop::comm_pair::operator<(const comm_pair_t &other) const {
-	return (get_src_node() < other.get_src_node() ||
+	return operator!=(other) &&
+	       (get_src_node() < other.get_src_node() ||
 	        (get_src_node() == other.get_src_node() &&
 	         get_dst_node() < other.get_dst_node()));
 }
 
 bool hlop::comm_pair::operator>(const comm_pair_t &other) const {
-	return !this->operator<(other) && !this->operator==(other);
+	return !operator<(other) && operator!=(other);
 }
 
-bool hlop::comm_pair::is_mid_node_pair() const { return sendrecv != nullptr; }
+bool hlop::comm_pair::is_mid_pair() const { return sendrecv != nullptr; }
 
 bool hlop::comm_pair::is_intra_node_pair() const { return get_src_node() == get_dst_node(); }
 
 bool hlop::comm_pair::is_inter_node_pair() const { return !is_intra_node_pair(); }
 
 bool hlop::comm_pair::is_intra_unit_pair() const {
-	return get_src_node().get_unit_id(get_src_rank()) ==
-	       get_dst_node().get_unit_id(get_dst_rank());
+	return is_intra_node_pair() &&
+	       (get_src_node().get_unit_id(get_src_rank()) ==
+	        get_dst_node().get_unit_id(get_dst_rank()));
 }
 
-bool hlop::comm_pair::is_inter_unit_pair() const { return !is_intra_unit_pair(); }
+bool hlop::comm_pair::is_inter_unit_pair() const {
+	return is_intra_node_pair() &&
+	       (get_src_node().get_unit_id(get_src_rank()) !=
+	        get_dst_node().get_unit_id(get_dst_rank()));
+}
 
 const hlop::node_t &hlop::comm_pair::get_src_node() const { return *src_pnr.first; }
 
@@ -114,11 +119,18 @@ int hlop::comm_pair::get_dst_rank() const { return dst_pnr.second; }
 
 std::ostream &hlop::operator<<(std::ostream &os, const comm_pair_t &self) {
 	if (self.sendrecv == nullptr)
-		os << "comm_pair{ src: " << self.get_src_node() << "(" << self.src_pnr.second
-		   << "); dst: " << self.get_dst_node() << "(" << self.dst_pnr.second << "); }";
+		os << "comm_pair{ src: " << self.get_src_node()
+		   << "{" << self.src_pnr.second << ", " << self.get_src_node().get_core(self.src_pnr.second)
+		   << "}; dst: " << self.get_dst_node()
+		   << "{" << self.dst_pnr.second << ", " << self.get_dst_node().get_core(self.dst_pnr.second)
+		   << "}; }";
 	else
-		os << "comm_pair{ src: " << self.sendrecv->get_src_node() << "(" << self.sendrecv->src_pnr.second
-		   << "); dst: " << self.sendrecv->get_dst_node() << "(" << self.sendrecv->dst_pnr.second
-		   << "); self: " << self.get_src_node() << "(" << self.src_pnr.second << "); }";
+		os << "comm_pair{ src: " << self.sendrecv->get_src_node()
+		   << "{" << self.sendrecv->src_pnr.second << ", " << self.sendrecv->get_src_node().get_core(self.sendrecv->src_pnr.second)
+		   << "}; dst: " << self.sendrecv->get_dst_node()
+		   << "{" << self.sendrecv->dst_pnr.second << ", " << self.sendrecv->get_dst_node().get_core(self.sendrecv->dst_pnr.second)
+		   << "}; self: " << self.get_src_node()
+		   << "{" << self.src_pnr.second << ", " << self.get_src_node().get_core(self.src_pnr.second)
+		   << "}; }";
 	return os;
 }

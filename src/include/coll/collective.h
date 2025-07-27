@@ -29,6 +29,10 @@ class collective {
 public:
 	using predictor_handler = std::function<double(const hlop::node_list_t &, int, const hlop::algo_diff_param_t &)>;
 
+protected:
+	static const hlop::param_t hlop_param_lat;
+	static const hlop::param_t hlop_param_bw;
+
 public:
 	collective();
 	collective(const std::string &small_scales_param_filepath);
@@ -90,10 +94,6 @@ protected:
 	std::unordered_map<hlop::algo_type, predictor_handler> ftbl;
 	std::optional<const hlop::param> small_scales_param;
 	std::optional<const hlop::param> other_param;
-
-protected:
-	static const hlop::param_t hlop_param_lat;
-	static const hlop::param_t hlop_param_bw;
 };
 } // namespace hlop
 

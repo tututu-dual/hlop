@@ -15,9 +15,8 @@ int main(int argc, char const *argv[]) {
 	INFO("node list: {}", l);
 	hlop::bcast b{};
 	std::vector<double> res;
-	for (int i = 0; i < 21; ++i) {
+	for (int i = 0; i < 21; ++i) 
 		res.emplace_back(b.predict(hlop::algo_type::BINOMIAL, l, 1 << i, 0));
-	}
 	INFO_VEC("res: ", res);
 
 	return 0;

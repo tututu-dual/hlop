@@ -71,7 +71,7 @@ public:
 	 * @brief check whether this pair is a middle pair(using sendrecv).
 	 * @return bool, true if it is a middle pair, false otherwise.
 	 */
-	bool is_mid_node_pair() const;
+	bool is_mid_pair() const;
 	/**
 	 * @brief check whether this pair is in the same node.
 	 * @return bool, true if it is an intra-node pair, false otherwise.

@@ -4,56 +4,57 @@
 #include <iostream>
 #include <sstream>
 
-#include "msg.h"
 #include "aux.h"
+#include "msg.h"
+
+#define LEVEL_OUT(level, fmt, ...)                    \
+	do {                                              \
+		std::cout << "[" << level << "] "             \
+		          << hlop::format(fmt, ##__VA_ARGS__) \
+		          << std::endl;                       \
+	} while (0)
+
+#define LEVEL_OUT_VEC(level, fmt, vec, ...)           \
+	do {                                              \
+		std::cout << "[" << level << "] "             \
+		          << hlop::format(fmt, ##__VA_ARGS__) \
+		          << "{n = " << vec.size() << "}: "   \
+		          << hlop::vtos(vec)                  \
+		          << std::endl;                       \
+	} while (0)
+
+#define LEVEL_OUT_MAP(level, fmt, map, ...)           \
+	do {                                              \
+		std::cout << "[" << level << "] "             \
+		          << hlop::format(fmt, ##__VA_ARGS__) \
+		          << "{n = " << map.size() << "}: "   \
+		          << hlop::mtos(map)                  \
+		          << std::endl;                       \
+	} while (0)
 
 #ifdef M_DEBUG
-#define INFO(fmt, ...)                                                           \
-	do {                                                                         \
-		std::cout << "[INFO] " << hlop::format(fmt, ##__VA_ARGS__) << std::endl; \
-	} while (0)
-
-#define ERROR(fmt, ...)                                                           \
-	do {                                                                          \
-		std::cerr << "[ERROR] " << hlop::format(fmt, ##__VA_ARGS__) << std::endl; \
-	} while (0)
-
-#define INFO_VEC(msg, vec)                    \
-	do {                                      \
-		INFO("{}(n = {}):", msg, vec.size()); \
-		INFO(hlop::vtos(vec));                \
-	} while (0)
-#else // M_DEBUG
 #define INFO(fmt, ...) \
-	do {               \
-	} while (0)
-
-#define ERROR(fmt, ...) \
-	do {                \
-	} while (0)
-
-#define INFO_VEC(msg, vec) \
-	do {                   \
-	} while (0)
+	LEVEL_OUT("INFO", fmt, ##__VA_ARGS__)
+#define INFO_VEC(fmt, vec, ...) \
+	LEVEL_OUT_VEC("INFO", fmt, vec, ##__VA_ARGS__)
+#define INFO_MAP(fmt, map, ...) \
+	LEVEL_OUT_MAP("INFO", fmt, map, ##__VA_ARGS__)
+#else // M_DEBUG
+#define INFO(fmt, ...)
+#define INFO_VEC(fmt, vec, ...)
+#define INFO_MAP(fmt, map, ...)
 #endif // M_DEBUG
 
 #ifdef M_DEBUG_VERBOSE
-#define DEBUG(fmt, ...)                                                           \
-	do {                                                                          \
-		std::cout << "[DEBUG] " << hlop::format(fmt, ##__VA_ARGS__) << std::endl; \
-	} while (0)
-#define DEBUG_VEC(msg, vec)                    \
-	do {                                       \
-		DEBUG("{}(n = {}):", msg, vec.size()); \
-		DEBUG(hlop::vtos(vec));                \
-	} while (0)
-#else // M_DEBUG_VERBOSE
 #define DEBUG(fmt, ...) \
-	do {                \
-	} while (0)
-#define DEBUG_VEC(msg, vec) \
-	do {                    \
-	} while (0)
+	LEVEL_OUT("DEBUG", fmt, ##__VA_ARGS__)
+#define DEBUG_VEC(fmt, vec, ...) \
+	LEVEL_OUT_VEC("DEBUG", fmt, vec, ##__VA_ARGS__)
+#define DEBUG_MAP(fmt, map, ...) \
+	LEVEL_OUT_MAP("DEBUG", fmt, map, ##__VA_ARGS__)
+#else // M_DEBUG_VERBOSE
+#define DEBUG(fmt, ...)
+#define DEBUG_VEC(fmt, vec, ...)
+#define DEBUG_MAP(fmt, map, ...)
 #endif // M_DEBUG_VERBOSE
-
 #endif // __M_DEBUG_H__

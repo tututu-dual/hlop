@@ -26,19 +26,6 @@ const int hlop::node_parser::get_max_node_level(hlop::platform_t pf) {
 	}
 }
 
-const int hlop::node_parser::get_node_cores(hlop::platform_t pf) {
-	switch (pf) {
-	case hlop::platform::DF:
-		return hlop::df_node::NODE_CORES;
-	case hlop::platform::TH:
-		HLOP_ERR("TH platform is not implemented yet");
-		return -1; // unreachable
-	default:
-		HLOP_ERR("unknown platform type");
-		return -1; // unreachable
-	}
-}
-
 const int hlop::node_parser::get_max_core_level(hlop::platform_t pf) {
 	switch (pf) {
 	case hlop::platform::DF:
@@ -52,10 +39,23 @@ const int hlop::node_parser::get_max_core_level(hlop::platform_t pf) {
 	}
 }
 
-const int hlop::node_parser::get_numa_cores(hlop::platform_t pf) {
+const int hlop::node_parser::get_numa_num(hlop::platform_t pf) {
 	switch (pf) {
 	case hlop::platform::DF:
-		return hlop::df_node::NUMA_CORES;
+		return hlop::df_node::NUMA_NUM;
+	case hlop::platform::TH:
+		HLOP_ERR("TH platform is not implemented yet");
+		return -1; // unreachable
+	default:
+		HLOP_ERR("unknown platform type");
+		return -1; // unreachable
+	}
+}
+
+const int hlop::node_parser::get_ncore_per_node(hlop::platform_t pf) {
+	switch (pf) {
+	case hlop::platform::DF:
+		return hlop::df_node::NCORE_PER_NODE;
 	case hlop::platform::TH:
 		HLOP_ERR("TH platform is not implemented yet");
 		return -1; // unreachable

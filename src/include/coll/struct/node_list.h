@@ -1,6 +1,7 @@
 #ifndef __NODE_LIST_H__
 #define __NODE_LIST_H__
 
+#include <functional>
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -25,6 +26,14 @@ class node_list {
 public:
 	using node_list_t = node_list;
 
+private:
+	using rank_util_handler = std::function<int(int, hlop::rank_arrangement_t, const node_list_t &)>;
+
+public:
+	static const rank_util_handler get_node_id;
+	static const rank_util_handler get_local_rank;
+	static const rank_util_handler get_core_id;
+
 public:
 	/**
 	 * @brief default constructor of node_list.
@@ -32,6 +41,30 @@ public:
 	 * It is provided to prevent the creation of an empty node_list.
 	 */
 	node_list() = delete;
+	/**
+	 * @fixme
+	 * @brief constructor of node_list with ranks and rule.
+	 * @param pf platform, the platform type of this node list.
+	 * @param node_list_str string, a string representation of the node list.
+	 * @param ppn int, the number of processes per node.
+	 * @param ranks vector<int>, a vector of process ranks in this node list.
+	 * @param rule rank_arrangement, the rank arrangement rule to use.
+	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
+	 */
+	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::arrangement_t rule);
+	/**
+	 * @fixme
+	 * @brief constructor of node_list with ranks.
+	 * @param pf platform, the platform type of this node list.
+	 * @param node_list_str string, a string representation of the node list.
+	 * @param ppn int, the number of processes per node.
+	 * @param rule rank_arrangement, the rank arrangement rule to use.
+	 * @param ranks vector<int>, a vector of process ranks bind to core in this node list.
+	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
+	 */
+	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::arrangement_t rule, std::vector<int> ranks);
+
+	~node_list() = default;
 
 private:
 	/**
@@ -45,29 +78,7 @@ private:
 	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn);
 
 public:
-	/**
-	 * @fixme
-	 * @brief constructor of node_list with ranks.
-	 * @param pf platform, the platform type of this node list.
-	 * @param node_list_str string, a string representation of the node list.
-	 * @param ppn int, the number of processes per node.
-	 * @param ranks vector<int>, a vector of process ranks bind to core in this node list.
-	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
-	 */
-	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, std::vector<int> ranks);
-	/**
-	 * @fixme
-	 * @brief constructor of node_list with ranks and rule.
-	 * @param pf platform, the platform type of this node list.
-	 * @param node_list_str string, a string representation of the node list.
-	 * @param ppn int, the number of processes per node.
-	 * @param ranks vector<int>, a vector of process ranks in this node list.
-	 * @param rule rank_arrangement, the rank arrangement rule to use.
-	 * @throws hlop_err, if the ranks are not in the range [0, ppn * nlist.size() - 1].
-	 */
-	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::arrangement_t rule);
-
-	~node_list() = default;
+	friend std::ostream &operator<<(std::ostream &os, const node_list_t &nl);
 
 public:
 	/**
@@ -133,9 +144,6 @@ public:
 	 * @throws hlop_err, if k is not in range [1, node_num].
 	 */
 	const std::vector<hlop::const_node_ptr> get_top_k_nodes(int k) const;
-
-public:
-	friend std::ostream &operator<<(std::ostream &os, const node_list_t &nl);
 
 private:
 	std::vector<hlop::const_node_ptr> nlist;

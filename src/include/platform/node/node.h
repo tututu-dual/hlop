@@ -26,9 +26,6 @@ public:
 	using const_node_ptr_t = const_node_ptr;
 
 public:
-	friend std::ostream &operator<<(std::ostream &os, const node_t &n);
-
-public:
 	node() = delete;
 	node(const std::string &node_str);
 	virtual ~node() = default;
@@ -40,37 +37,39 @@ public:
 	virtual bool operator>(const node_t &other) const = 0;
 	virtual const int operator-(const node_t &other) const = 0;
 
+	friend std::ostream &operator<<(std::ostream &os, const node_t &n);
+
 public:
 	/**
 	 * @brief get the maximum node level.
 	 * @return int, the maximum node level.
 	 */
-	virtual const int max_node_level() const = 0;
-	/**
-	 * @brief get the number of cores in the node.
-	 * @return int, the number of cores in the node.
-	 */
-	virtual const int node_cores() const = 0;
+	virtual const int get_max_node_level() const = 0;
 	/**
 	 * @brief get the maximum core level.
 	 * @return int, the maximum core level.
 	 */
-	virtual const int max_core_level() const = 0;
+	virtual const int get_max_core_level() const = 0;
 	/**
 	 * @brief get the number of NUMA nodes in the node.
 	 * @return int, the number of NUMA nodes in the node.
 	 */
-	virtual const int numa_cores() const = 0;
+	virtual const int get_numa_num() const = 0;
+	/**
+	 * @brief get the number of cores in the node.
+	 * @return int, the number of cores in the node.
+	 */
+	virtual const int get_ncore_per_node() const = 0;
 	/**
 	 * @brief get the number of cores per NUMA node.
 	 * @return int, the number of cores per NUMA node.
 	 */
-	virtual const int ncore_per_numa() const = 0;
+	virtual const int get_ncore_per_numa() const = 0;
 	/**
 	 * @brief get the number of units in the node.
 	 * @return int, the number of units in the node.
 	 */
-	virtual const int ncore_per_unit() const = 0;
+	virtual const int get_ncore_per_unit() const = 0;
 	/**
 	 * @brief get the regex for matching node names.
 	 * @return regex, the regex for matching node names.
@@ -91,6 +90,13 @@ public:
 	 */
 	void bind_core(int rank, int core) const;
 	/**
+	 * @brief get the core of a process rank.
+	 * @param rank int, the process rank.
+	 * @return int, the core of the process rank.
+	 * @throws hlop_err, if the rank is not bound to any core.
+	 */
+	const int get_core(int rank) const;
+	/**
 	 * @brief get the unit id of a process rank.
 	 * @param rank int, the process rank.
 	 * @return int, the unit id of the process rank.
@@ -105,15 +111,6 @@ public:
 	 * @throws hlop_err, if rank1 or rank2 is not in the range of [0, node_cores - 1].
 	 */
 	const int get_core_level(int rank1, int rank2) const;
-
-protected:
-	/**
-	 * @brief get the core of a process rank.
-	 * @param rank int, the process rank.
-	 * @return int, the core of the process rank.
-	 * @throws hlop_err, if the rank is not bound to any core.
-	 */
-	const int get_core(int rank) const;
 
 protected:
 	const std::string node_name;

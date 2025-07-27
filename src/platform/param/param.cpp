@@ -17,16 +17,6 @@
 
 hlop::param::param(const std::string &resources_file) { load_params(resources_file); }
 
-const std::vector<std::string_view> hlop::param::get_categorys() const {
-	std::vector<std::string_view> categories;
-	for (const auto &pair : params)
-		categories.emplace_back(pair.first);
-
-	return categories;
-}
-
-const std::vector<double> &hlop::param::get_msg_size_range() const { return msg_size_pow; }
-
 void hlop::param::load_params(const std::string &resources_file) {
 	std::ifstream fin{resources_file};
 	if (!fin.is_open())
@@ -50,6 +40,16 @@ void hlop::param::load_params(const std::string &resources_file) {
 		params.emplace(param_category, hlop::stov<double>(line, 1));
 	}
 }
+
+const std::vector<std::string_view> hlop::param::get_categorys() const {
+	std::vector<std::string_view> categories;
+	for (const auto &pair : params)
+		categories.emplace_back(pair.first);
+
+	return categories;
+}
+
+const std::vector<double> &hlop::param::get_msg_size_range() const { return msg_size_pow; }
 
 bool hlop::param::has_category(const std::string &param_category) const {
 	const auto &it = params.find(param_category);

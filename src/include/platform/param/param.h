@@ -46,6 +46,14 @@ public:
 	param(const std::string &resources_file);
 	~param() = default;
 
+private:
+	/**
+	 * @brief load parameters from resources file, auxiliary function.
+	 * @param resources_file string, path to the resources file.
+	 * @throws hlop_err, if the resources file cannot be opened or is empty or has invalid format.
+	 */
+	void load_params(const std::string &resources_file);
+
 public:
 	/**
 	 * @brief get all categories.
@@ -57,6 +65,27 @@ public:
 	 * @return vector<double>, containing the message size range in powers of 2.
 	 */
 	const std::vector<double> &get_msg_size_range() const;
+
+private:
+	/**
+	 * @brief check if a category exists, auxiliary function.
+	 * @param param_category string, the category to check.
+	 * @return bool, true if the category exists, false otherwise.
+	 */
+	bool has_category(const std::string &param_category) const;
+	/**
+	 * @brief get parameters for a specific category, auxiliary function.
+	 * @param param_category string, the category to get parameters for.
+	 * @return vector<double>, the parameters for the given category.
+	 * @throws hlop_err, if the category does not exist.
+	 */
+	const std::vector<double> &get_params(const std::string &param_category) const;
+	/**
+	 * @brief fit function for parameters that are not present in the parameter file, auxiliary function.
+	 * @param y vector<double>, the parameters to fit.
+	 * @return function<double(double)>, a function that fits the parameters.
+	 */
+	std::function<double(double)> fit(const std::vector<double> &y) const;
 
 public:
 	/**
@@ -79,12 +108,6 @@ public:
 
 private:
 	/**
-	 * @brief load parameters from resources file, auxiliary function.
-	 * @param resources_file string, path to the resources file.
-	 * @throws hlop_err, if the resources file cannot be opened or is empty or has invalid format.
-	 */
-	void load_params(const std::string &resources_file);
-	/**
 	 * @brief concatenate labels to a category, auxiliary function.
 	 * @tparam Labels labels type.
 	 * @param labels Labels, concatenated labels to a category.
@@ -92,25 +115,6 @@ private:
 	 */
 	template <typename... Labels>
 	const std::string get_category_with_labels(const Labels &...labels) const;
-	/**
-	 * @brief check if a category exists, auxiliary function.
-	 * @param param_category string, the category to check.
-	 * @return bool, true if the category exists, false otherwise.
-	 */
-	bool has_category(const std::string &param_category) const;
-	/**
-	 * @brief get parameters for a specific category, auxiliary function.
-	 * @param param_category string, the category to get parameters for.
-	 * @return vector<double>, the parameters for the given category.
-	 * @throws hlop_err, if the category does not exist.
-	 */
-	const std::vector<double> &get_params(const std::string &param_category) const;
-	/**
-	 * @brief fit function for parameters that are not present in the parameter file, auxiliary function.
-	 * @param y vector<double>, the parameters to fit.
-	 * @return function<double(double)>, a function that fits the parameters.
-	 */
-	std::function<double(double)> fit(const std::vector<double> &y) const;
 
 private:
 	std::vector<double> msg_size_pow; // length of param vector, 2 << i is the message size of this coloum

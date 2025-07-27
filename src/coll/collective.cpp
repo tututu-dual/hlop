@@ -47,30 +47,39 @@ const double hlop::collective::predict(hlop::algo_type algo,
 
 const std::map<hlop::comm_pair, int> hlop::collective::get_contentions(const std::vector<hlop::comm_pair> &pairs) const {
 	std::map<hlop::comm_pair, int> res;
-	for (const auto &p : pairs)
-		res[p] = res.find(p) == res.end() ? 1 : res[p] + 1;
-
+	for (const auto &p : pairs) {
+		const auto &iter = std::find_if(res.begin(), res.end(),
+		                                [&p](const auto &pair) { return pair.first == p; });
+		if (iter != res.end())
+			++iter->second;
+		else
+			res.emplace(p, 1);
+		// res[p] = (res.find(p) == res.end() ? 1 : res[p] + 1);
+	}
 	return res;
 }
 
 const double hlop::collective::calc_cost(const hlop::node_list_t &nl,
                                          const std::vector<hlop::comm_pair> &pairs,
                                          int msg_size) const {
+	INFO("calculate contention: ");
 	double max_cost = 0.0;
 	const auto contention = get_contentions(pairs);
-	INFO("calculate contention");
+	DEBUG_MAP("contentions", contention);
 	for (const auto &c : contention) {
-		double tmp_cost;
-		int nc = c.second;
 		const auto &cp = c.first;
+		INFO("{}", cp);
+		int nc = c.second;
+		INFO("contention: {}", nc);
+		double tmp_cost;
 		if (cp.is_intra_node_pair())
 			tmp_cost = hlop_param_lat.get_param(msg_size, "L0", std::to_string(nl.get_level(cp)),
 			                                    std::to_string(nc));
 		else
 			tmp_cost = hlop_param_lat.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)),
 			                                    std::to_string(nc));
+		INFO("cost: {}", tmp_cost);
 		max_cost = std::max(tmp_cost, max_cost);
-		INFO("{}, contention: {}; cost: {}", cp, nc, tmp_cost);
 	}
 	return max_cost;
 }

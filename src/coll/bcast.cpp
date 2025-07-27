@@ -31,9 +31,9 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl,
 	// simulate the sender procedure
 	mask >>= 1;
 	while (mask > 0) {
-		INFO("mask = {}", mask);
+		INFO("mask = {}, message size = {}", mask, msg_size);
 		// generate communication pairs
-		DEBUG("communication pairs: ");
+		DEBUG("generate communication pairs: ");
 		std::vector<hlop::comm_pair> p;
 		for (int rank = 0; rank < comm_size; ++rank) {
 			int relative_rank = (rank >= root) ? (rank - root) : (rank - root + comm_size);
@@ -45,11 +45,12 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl,
 					has_value[dst_rank] = true;
 					hlop::comm_pair tcp{nl.get_node_ptr_by_rank(rank), rank,
 					                    nl.get_node_ptr_by_rank(dst_rank), dst_rank};
-					DEBUG("{}, transport message size: {}", tcp, msg_size);
+					DEBUG("{}", tcp);
 					p.emplace_back(std::move(tcp));
 				}
 			}
 		}
+		DEBUG_VEC("communication pairs: ", p);
 		cost += calc_cost(nl, p, msg_size);
 		// next loop
 		mask >>= 1;

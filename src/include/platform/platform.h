@@ -33,9 +33,9 @@ std::ostream &operator<<(std::ostream &os, const hlop::platform_t &p);
 class node_parser {
 public:
 	static const int get_max_node_level(hlop::platform_t pf);
-	static const int get_node_cores(hlop::platform_t pf);
 	static const int get_max_core_level(hlop::platform_t pf);
-	static const int get_numa_cores(hlop::platform_t pf);
+	static const int get_numa_num(hlop::platform_t pf);
+	static const int get_ncore_per_node(hlop::platform_t pf);
 	static const int get_ncore_per_numa(hlop::platform_t pf);
 	static const int get_ncore_per_unit(hlop::platform_t pf);
 	static const std::regex &get_node_regex(hlop::platform_t pf);
