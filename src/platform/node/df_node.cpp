@@ -11,7 +11,7 @@
 #include "node/df_node.h"
 #include "node/node.h"
 
-const std::regex hlop::df_node::NODE_LIST_REGEX{R"(([^,\[\]]+\[[^\[\]]+\])|([^,\[\]]+))"};
+const std::regex hlop::df_node::NODE_LIST_REGEX{R"(([^,\[\]]+(\[[^\]]*\])?))"};
 const std::regex hlop::df_node::NODE_REGEX{R"(([a-zA-Z]\d+)([a-zA-Z]\d+)([a-zA-Z]\d+))"};
 
 const std::vector<hlop::const_node_ptr> hlop::df_node::parse_node_list(const std::string &node_list_str) {

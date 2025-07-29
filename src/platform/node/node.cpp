@@ -32,9 +32,9 @@ const int hlop::node::get_unit_id(int rank) const {
 const int hlop::node::get_core_level(int rank1, int rank2) const {
 	int unit1 = get_unit_id(rank1),
 	    unit2 = get_unit_id(rank2);
-	for (int i = 0; i <= get_max_core_level(); ++i) {
+	for (int i = 1; i <= get_max_core_level(); ++i) {
 		if ((unit1 >> i) == (unit2 >> i))
-			return i;
+			return i - 1;
 	}
 	HLOP_ERR(hlop::format("undefined core level in node {} between {} and {}", name(), rank1, rank2));
 	return -1; // unreachable

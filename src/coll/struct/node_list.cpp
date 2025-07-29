@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <iostream>
-#include <regex>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -87,8 +86,6 @@ hlop::node_list::node_list(hlop::platform_t pf, const std::string &node_list_str
       platform(pf) {
 	if (ppn > hlop::node_parser::get_ncore_per_node(pf))
 		HLOP_ERR(hlop::format("number of process per node must less equal to {}", ppn));
-	if (!std::regex_match(node_list_str, hlop::node_parser::get_node_list_regex(pf)))
-		HLOP_ERR(hlop::format("invalid node list string {} ", node_list_str));
 	nlist = hlop::node_parser::parse_node_list(pf, node_list_str);
 }
 

@@ -1,9 +1,8 @@
 #include "m_debug.h"
-#include "platform.h"
+#include "node/df_node.h"
 
 int main(int argc, char const *argv[]) {
-	auto v = hlop::node_parser::parse_node_list(hlop::platform::DF, "i10r4n[03-04,16,18-19]");
-	v[0]->bind_core(0, 0);
+	auto v = hlop::df_node::parse_node_list("i10r4n[03-04,06,08-10],j10r4n04");
 	INFO_VEC("node list", v);
 	return 0;
 }

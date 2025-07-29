@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vector>
 
 #include "bcast.h"
@@ -8,16 +9,17 @@
 
 int main(int argc, char const *argv[]) {
 	hlop::node_list_t l{hlop::platform::DF,
-	                    "h02r1n[08-09]",
+	                    "g09r2n[16-17]",
 	                    8,
 	                    {.node_arrange = hlop::rank_arrangement::BLOCK,
-	                     .core_arrange = hlop::rank_arrangement::BLOCK}};
+	                     .core_arrange = hlop::rank_arrangement::CYCLIC}};
 	INFO("node list: {}", l);
 	hlop::bcast b{};
 	std::vector<double> res;
-	for (int i = 0; i < 21; ++i) 
+	for (int i = 0; i < 21; ++i)
 		res.emplace_back(b.predict(hlop::algo_type::BINOMIAL, l, 1 << i, 0));
-	INFO_VEC("res: ", res);
+	for (const auto &i : res)
+		std::cout << i << std::endl;
 
 	return 0;
 }

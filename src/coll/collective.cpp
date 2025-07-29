@@ -54,7 +54,6 @@ const std::map<hlop::comm_pair, int> hlop::collective::get_contentions(const std
 			++iter->second;
 		else
 			res.emplace(p, 1);
-		// res[p] = (res.find(p) == res.end() ? 1 : res[p] + 1);
 	}
 	return res;
 }
@@ -73,11 +72,13 @@ const double hlop::collective::calc_cost(const hlop::node_list_t &nl,
 		INFO("contention: {}", nc);
 		double tmp_cost;
 		if (cp.is_intra_node_pair())
-			tmp_cost = hlop_param_lat.get_param(msg_size, "L0", std::to_string(nl.get_level(cp)),
-			                                    std::to_string(nc));
+			tmp_cost = hlop_param_lat.get_param(msg_size, "L0", std::to_string(nl.get_level(cp)), std::to_string(nc)) + (msg_size > 8192 ? msg_size / hlop_param_bw.get_param(msg_size, "L0", std::to_string(nl.get_level(cp)), std::to_string(nc)) : 0);
 		else
-			tmp_cost = hlop_param_lat.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)),
-			                                    std::to_string(nc));
+			tmp_cost = hlop_param_lat.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)), std::to_string(nc)) + (msg_size > 8192 ? msg_size / hlop_param_bw.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)), std::to_string(nc)) : 0);
+		// tmp_cost = hlop_param_lat.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)),
+		//                                     std::to_string(nc)) +
+		//            msg_size / hlop_param_bw.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)),
+		//                                               std::to_string(nc));
 		INFO("cost: {}", tmp_cost);
 		max_cost = std::max(tmp_cost, max_cost);
 	}

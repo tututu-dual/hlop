@@ -13,8 +13,7 @@ hlop::bcast::bcast() : hlop::collective() {
 	initialize_ftbl();
 }
 
-double hlop::bcast::binomial(const hlop::node_list_t &nl,
-                             int msg_size,
+double hlop::bcast::binomial(const hlop::node_list_t &nl, int msg_size,
                              const hlop::algo_diff_param_t &dp) {
 	// check if the root is valid
 	if (!std::holds_alternative<int>(dp))
