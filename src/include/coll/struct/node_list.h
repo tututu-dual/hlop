@@ -24,7 +24,7 @@ namespace hlop {
  */
 class node_list {
 public:
-	using node_list_t = node_list;
+	using node_list_t = hlop::node_list;
 
 private:
 	using rank_util_handler = std::function<int(int, hlop::rank_arrangement_t, const node_list_t &)>;
@@ -42,7 +42,6 @@ public:
 	 */
 	node_list() = delete;
 	/**
-	 * @fixme
 	 * @brief constructor of node_list with ranks and rule.
 	 * @param pf platform, the platform type of this node list.
 	 * @param node_list_str string, a string representation of the node list.
@@ -53,7 +52,6 @@ public:
 	 */
 	node_list(hlop::platform_t pf, const std::string &node_list_str, int ppn, hlop::arrangement_t rule);
 	/**
-	 * @fixme
 	 * @brief constructor of node_list with ranks.
 	 * @param pf platform, the platform type of this node list.
 	 * @param node_list_str string, a string representation of the node list.

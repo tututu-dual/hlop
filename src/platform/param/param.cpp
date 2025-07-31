@@ -58,6 +58,16 @@ bool hlop::param::has_category(const std::string &param_category) const {
 	return true;
 }
 
+const double hlop::param::get_param(int msg_size, const std::string &param_category) const {
+	const auto &ps = get_params(param_category);
+
+	double e = std::log2(msg_size);
+	int idx = static_cast<int>(e);
+	if (hlop::is_pof2(msg_size) && idx < msg_size_pow.size())
+		return ps[idx];
+	return fit(ps)(e);
+}
+
 const std::vector<double> &hlop::param::get_params(const std::string &param_category) const {
 	if (!has_category(param_category))
 		HLOP_ERR(hlop::format("parameter category not found: {}", param_category));

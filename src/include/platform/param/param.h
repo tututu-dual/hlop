@@ -1,7 +1,6 @@
 #ifndef __PARAM_H__
 #define __PARAM_H__
 
-#include <cmath>
 #include <functional>
 #include <sstream>
 #include <string>
@@ -9,7 +8,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "aux.h"
 #include "fit.h"
 
 namespace hlop {
@@ -65,14 +63,22 @@ public:
 	 * @return vector<double>, containing the message size range in powers of 2.
 	 */
 	const std::vector<double> &get_msg_size_range() const;
-
-private:
 	/**
 	 * @brief check if a category exists, auxiliary function.
 	 * @param param_category string, the category to check.
 	 * @return bool, true if the category exists, false otherwise.
 	 */
 	bool has_category(const std::string &param_category) const;
+	/**
+	 * @brief get parameter based on message size and category.
+	 * @param msg_size int, message size.
+	 * @param param_category string, the category to get parameters for.
+	 * @return double, the parameter value for the given message size and category.
+	 * @throws hlop_err, if the category does not exist or if the message size is not a power of 2.
+	 */
+	const double get_param(int msg_size, const std::string &param_category) const;
+
+private:
 	/**
 	 * @brief get parameters for a specific category, auxiliary function.
 	 * @param param_category string, the category to get parameters for.
@@ -106,7 +112,7 @@ public:
 	template <typename... Labels>
 	const double get_param(int msg_size, const Labels &...labels) const;
 
-private:
+public:
 	/**
 	 * @brief concatenate labels to a category, auxiliary function.
 	 * @tparam Labels labels type.
@@ -114,7 +120,7 @@ private:
 	 * @return string, the concatenated category name.
 	 */
 	template <typename... Labels>
-	const std::string get_category_with_labels(const Labels &...labels) const;
+	static const std::string get_category_with_labels(const Labels &...labels);
 
 private:
 	std::vector<double> msg_size_pow; // length of param vector, 2 << i is the message size of this coloum
@@ -131,17 +137,11 @@ inline bool param::has_category(const Labels &...labels) {
 template <typename... Labels>
 inline const double param::get_param(int msg_size, const Labels &...labels) const {
 	const auto key = get_category_with_labels(labels...);
-	const auto &ps = get_params(key);
-
-	double e = std::log2(msg_size);
-	int idx = static_cast<int>(e);
-	if (hlop::is_pof2(msg_size) && idx < msg_size_pow.size())
-		return ps[idx];
-	return fit(ps)(e);
+	return get_param(msg_size, key);
 }
 
 template <typename... Labels>
-inline const std::string param::get_category_with_labels(const Labels &...labels) const {
+inline const std::string param::get_category_with_labels(const Labels &...labels) {
 	std::stringstream ss;
 	((ss << labels << "_"), ...); // Concatenate labels with underscores
 	std::string key = ss.str();

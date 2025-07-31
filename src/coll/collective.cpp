@@ -70,15 +70,14 @@ const double hlop::collective::calc_cost(const hlop::node_list_t &nl,
 		INFO("{}", cp);
 		int nc = c.second;
 		INFO("contention: {}", nc);
-		double tmp_cost;
-		if (cp.is_intra_node_pair())
-			tmp_cost = hlop_param_lat.get_param(msg_size, "L0", std::to_string(nl.get_level(cp)), std::to_string(nc)) + (msg_size > 8192 ? msg_size / hlop_param_bw.get_param(msg_size, "L0", std::to_string(nl.get_level(cp)), std::to_string(nc)) : 0);
-		else
-			tmp_cost = hlop_param_lat.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)), std::to_string(nc)) + (msg_size > 8192 ? msg_size / hlop_param_bw.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)), std::to_string(nc)) : 0);
-		// tmp_cost = hlop_param_lat.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)),
-		//                                     std::to_string(nc)) +
-		//            msg_size / hlop_param_bw.get_param(msg_size, "L1", std::to_string(nl.get_level(cp)),
-		//                                               std::to_string(nc));
+		const auto &param_category = param::get_category_with_labels(
+		    cp.is_intra_node_pair() ? "L0" : "L1",
+		    std::to_string(nl.get_level(cp)),
+		    std::to_string(nc));
+		// double tmp_cost = hlop_param_lat.get_param(msg_size, param_category) +
+		//                   msg_size / hlop_param_bw.get_param(msg_size, param_category);
+		double tmp_cost = hlop_param_lat.get_param(msg_size, param_category) +
+		                  (msg_size > 8192 ? msg_size / hlop_param_bw.get_param(msg_size, param_category) : 0);
 		INFO("cost: {}", tmp_cost);
 		max_cost = std::max(tmp_cost, max_cost);
 	}
