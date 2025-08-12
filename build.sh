@@ -1,6 +1,6 @@
 #!/bin/bash
 
-install_dir="${HOME}/tmp/install"
+install_dir="${install_dir:-${HOME}}"
 
 [ -d ${install_dir} ] && rm -rf ${install_dir}
 [ -d build ] && rm -rf build

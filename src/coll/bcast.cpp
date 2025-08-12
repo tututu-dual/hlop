@@ -30,7 +30,7 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl, int msg_size,
 	// simulate the sender procedure
 	mask >>= 1;
 	while (mask > 0) {
-		INFO("mask = {}, message size = {}", mask, msg_size);
+		INFO("mask = {}", mask);
 		// generate communication pairs
 		DEBUG("generate communication pairs: ");
 		std::vector<hlop::comm_pair> p;
@@ -45,6 +45,7 @@ double hlop::bcast::binomial(const hlop::node_list_t &nl, int msg_size,
 					hlop::comm_pair tcp{nl.get_node_ptr_by_rank(rank), rank,
 					                    nl.get_node_ptr_by_rank(dst_rank), dst_rank};
 					DEBUG("{}", tcp);
+					DEBUG("transport {} bytes from rank {} to rank {}", msg_size, rank, dst_rank);
 					p.emplace_back(std::move(tcp));
 				}
 			}

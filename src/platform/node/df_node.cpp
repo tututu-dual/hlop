@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstddef>
 #include <iomanip>
 #include <memory>
@@ -17,8 +18,13 @@ const std::regex hlop::df_node::NODE_REGEX{R"(([a-zA-Z]\d+)([a-zA-Z]\d+)([a-zA-Z
 const std::vector<hlop::const_node_ptr> hlop::df_node::parse_node_list(const std::string &node_list_str) {
 	std::vector<hlop::const_node_ptr> nodes;
 	auto node_names = parse_node_list_aux(node_list_str);
-	for (const auto &name : node_names)
+	for (const auto &name : node_names) {
+		if (std::find_if(nodes.begin(), nodes.end(), [&](const auto &node) {
+			    return node->name() == name;
+		    }) != nodes.end())
+			HLOP_ERR(hlop::format("duplicate node name {}", name));
 		nodes.emplace_back(std::make_shared<const hlop::df_node>(name));
+	}
 	return nodes;
 }
 

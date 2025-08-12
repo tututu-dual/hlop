@@ -22,6 +22,7 @@ double hlop::scatter::binomial(const hlop::node_list_t &nl,
 	int comm_size = nl.get_rank_num(),
 	    mask = hlop::pof2_ceil(comm_size),
 	    scatter_size = (msg_size + comm_size - 1) / comm_size;
+			msg_size = msg_size * comm_size;
 	std::vector<int> subtree_msg_size(comm_size, 0);
 	subtree_msg_size[root] = msg_size;
 
@@ -30,6 +31,7 @@ double hlop::scatter::binomial(const hlop::node_list_t &nl,
 	while (mask > 0) {
 		INFO("mask = {}", mask);
 		// generate communication pairs
+		DEBUG("generate communication pairs: ");
 		std::vector<hlop::comm_pair> p;
 		for (int rank = 0; rank < comm_size; ++rank) {
 			int relative_rank = (rank >= root) ? (rank - root) : (rank - root + comm_size);
@@ -42,11 +44,13 @@ double hlop::scatter::binomial(const hlop::node_list_t &nl,
 					subtree_msg_size[rank] = scatter_size * mask;
 					hlop::comm_pair tcp{nl.get_node_ptr_by_rank(rank), rank,
 					                    nl.get_node_ptr_by_rank(dst_rank), dst_rank};
-					DEBUG("{}, transport message size: {}", tcp, subtree_msg_size[dst_rank]);
+					DEBUG("{}", tcp);
+					DEBUG("transport {} bytes from rank {} to rank {}", subtree_msg_size[dst_rank], rank, dst_rank);
 					p.emplace_back(std::move(tcp));
 				}
 			}
 		}
+		DEBUG_VEC("communication pairs: ", p);
 		cost += calc_cost(nl, p, msg_size);
 		// next loop
 		mask >>= 1;

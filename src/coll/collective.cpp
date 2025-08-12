@@ -74,10 +74,12 @@ const double hlop::collective::calc_cost(const hlop::node_list_t &nl,
 		    cp.is_intra_node_pair() ? "L0" : "L1",
 		    std::to_string(nl.get_level(cp)),
 		    std::to_string(nc));
-		// double tmp_cost = hlop_param_lat.get_param(msg_size, param_category) +
-		//                   msg_size / hlop_param_bw.get_param(msg_size, param_category);
-		double tmp_cost = hlop_param_lat.get_param(msg_size, param_category) +
-		                  (msg_size > 8192 ? msg_size / hlop_param_bw.get_param(msg_size, param_category) : 0);
+		double tmp_cost_lat = hlop_param_lat.get_param(msg_size, param_category),
+		       tmp_cost_bw = 0.0;
+		if (cp.is_inter_node_pair() && msg_size > 8192)
+			tmp_cost_bw = msg_size / hlop_param_bw.get_param(msg_size, param_category);
+
+		double tmp_cost = tmp_cost_lat + tmp_cost_bw;
 		INFO("cost: {}", tmp_cost);
 		max_cost = std::max(tmp_cost, max_cost);
 	}

@@ -39,19 +39,27 @@ double hlop::allgather::recursive_doubling(const hlop::node_list_t &nl,
 	while (mask < comm_size) {
 		INFO("mask = {}", mask);
 		// generate communication pairs
+		DEBUG("generate communication pairs: ");
+		std::vector<bool> has_value(comm_size, false);
 		std::vector<hlop::comm_pair> p;
 		for (int rank = 0; rank < comm_size; ++rank) {
 			int relative_rank = (rank >= root) ? (rank - root) : (rank - root + comm_size);
 			int relative_dst = relative_rank ^ mask;
 			if (relative_dst < comm_size) {
 				int dst_rank = (relative_dst + root) % comm_size;
+				if (has_value[dst_rank])
+					continue;
+				has_value[rank] = true;
+				has_value[dst_rank] = true;
 				hlop::comm_pair tcp{nl.get_node_ptr_by_rank(rank), rank,
 				                    nl.get_node_ptr_by_rank(dst_rank), dst_rank};
-				DEBUG("{}, transport message size: {}", tcp, msg_size);
+				DEBUG("{}", tcp);
+				DEBUG("transport {} bytes from rank {} to rank {}", msg_size, rank, dst_rank);
 				p.emplace_back(std::move(tcp));
 			}
 		}
-		cost += calc_cost(nl, p, msg_size);
+		DEBUG_VEC("communication pairs: ", p);
+		cost += calc_cost(nl, p, msg_size * mask);
 		// next loop
 		mask <<= 1;
 	}

@@ -37,8 +37,8 @@ hlop::exec_args_t hlop::parse_argument(int *argc, char ***argv) {
 	hlop::node_list_t nl{hlop::enum_cast<hlop::platform>(FLAGS_pf),
 	                     FLAGS_nl,
 	                     FLAGS_ppn,
-	                     {.node_arrange = hlop::rank_arrangement::CYCLIC,
-	                      .core_arrange = hlop::rank_arrangement::CYCLIC}};
+	                     {.node_arrange = hlop::rank_arrangement::BLOCK,
+	                      .core_arrange = hlop::rank_arrangement::BLOCK}};
 	auto msz = hlop::stov<int>(FLAGS_msz);
 
 	return hlop::exec_args_t{.op = op, .algo = algo, .nl = std::move(nl), .msz = std::move(msz)};

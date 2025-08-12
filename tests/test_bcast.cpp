@@ -9,10 +9,10 @@
 
 int main(int argc, char const *argv[]) {
 	hlop::node_list_t l{hlop::platform::DF,
-	                    "g09r2n[16-17]",
+	                    "g15r1n[05-06]",
 	                    8,
 	                    {.node_arrange = hlop::rank_arrangement::BLOCK,
-	                     .core_arrange = hlop::rank_arrangement::CYCLIC}};
+	                     .core_arrange = hlop::rank_arrangement::BLOCK}};
 	INFO("node list: {}", l);
 	hlop::bcast b{};
 	std::vector<double> res;
