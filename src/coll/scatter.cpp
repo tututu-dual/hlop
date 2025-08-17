@@ -22,7 +22,7 @@ double hlop::scatter::binomial(const hlop::node_list_t &nl,
 	int comm_size = nl.get_rank_num(),
 	    mask = hlop::pof2_ceil(comm_size),
 	    scatter_size = (msg_size + comm_size - 1) / comm_size;
-			msg_size = msg_size * comm_size;
+	msg_size = msg_size * comm_size / 4;
 	std::vector<int> subtree_msg_size(comm_size, 0);
 	subtree_msg_size[root] = msg_size;
 

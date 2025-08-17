@@ -14,4 +14,4 @@ if(MAIN_DEBUG)
 	target_compile_definitions(hlop PRIVATE M_DEBUG_VERBOSE)
 endif()
 
-target_link_libraries(hlop PRIVATE gflags PRIVATE coll)
+target_link_libraries(hlop PRIVATE coll PRIVATE gflags)

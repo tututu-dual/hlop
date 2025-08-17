@@ -1,8 +1,8 @@
 #!/bin/bash
 
-install_dir="${install_dir:-${HOME}}"
+install_dir="${install_dir:-$(pwd)}"
 
-[ -d ${install_dir} ] && rm -rf ${install_dir}
+# [ -d ${install_dir} ] && rm -rf ${install_dir}
 [ -d build ] && rm -rf build
 [ -d bin ] && rm -rf bin
 [ -d lib ] && rm -rf lib

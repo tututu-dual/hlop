@@ -76,7 +76,7 @@ const double hlop::collective::calc_cost(const hlop::node_list_t &nl,
 		    std::to_string(nc));
 		double tmp_cost_lat = hlop_param_lat.get_param(msg_size, param_category),
 		       tmp_cost_bw = 0.0;
-		if (cp.is_inter_node_pair() && msg_size > 8192)
+		if (cp.is_inter_node_pair())
 			tmp_cost_bw = msg_size / hlop_param_bw.get_param(msg_size, param_category);
 
 		double tmp_cost = tmp_cost_lat + tmp_cost_bw;
