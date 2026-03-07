@@ -16,10 +16,15 @@ export C_INCLUDE_PATH=/public/software/mathlib/gsl/2.7/include:${C_INCLUDE_PATH}
 mkdir -p build bin lib
 
 cmake -DCMAKE_C_COMPILER=gcc \
-          -DCMAKE_CXX_COMPILER=g++ \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_INSTALL_PREFIX=${install_dir} \
-          -B build \
-          -S .
+	-DCMAKE_CXX_COMPILER=g++ \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=${install_dir} \
+	-B build \
+	-S .
 
-(cd build; make -j 8; make install;)
+(
+	cd build
+	make -j 8
+	make install
+)
+
