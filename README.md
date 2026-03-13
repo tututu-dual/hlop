@@ -1,7 +1,7 @@
 # hlop (version 1.0)
 
 ##  directory struct
-```
+```txt
 src
 ├── CMakeLists.txt
 ├── coll
@@ -36,7 +36,9 @@ src
 │   │   └── main.h
 │   ├── platform
 │   │   ├── node
-│   │   │   └── df_node_parser.h
+│   │   │   ├── df_node.h
+│   │   │   ├── node.h
+│   │   │   └── th_node.h
 │   │   ├── param
 │   │   │   └── param.h
 │   │   └── platform.h
@@ -52,7 +54,9 @@ src
 ├── platform
 │   ├── CMakeLists.txt
 │   ├── node
-│   │   └── df_node_parser.cpp
+│   │   ├── df_node.cpp
+│   │   ├── node.cpp
+│   │   └── th_node.cpp
 │   ├── param
 │   │   └── param.cpp
 │   └── platform.cpp
@@ -64,6 +68,6 @@ src
 
 ## dependencies
 
-- `GSL`:
-- `magic_enum`:
-- `gflags`:
+- [x] `GSL`:
+- [x] `magic_enum`:
+- [x] `gflags`:
